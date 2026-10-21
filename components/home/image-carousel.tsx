@@ -1,5 +1,6 @@
 "use client"
 
+import { whatsappNumbers } from "@/lib/contact"
 import { useEffect, useState, useCallback } from "react"
 import Image from "next/image"
 import { ChevronLeft, ChevronRight } from "lucide-react"
@@ -22,7 +23,7 @@ const images = [
     src: "/images/contact.jpg",
     alt: "Contacto AboVirtual",
     title: "Contáctanos",
-    subtitle: "+56 9 4116 5158",
+    subtitle: `${whatsappNumbers.primary.display} / ${whatsappNumbers.secondary.display}`,
   },
   {
     src: "/images/logo-alt.jpg",

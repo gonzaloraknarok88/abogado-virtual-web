@@ -1,3 +1,4 @@
+import { WHATSAPP_URL } from "@/lib/contact"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { WhatsAppButton } from "@/components/whatsapp-button"
@@ -183,7 +184,7 @@ export default function AgentesIAPage() {
                   </CardContent>
                   <CardFooter>
                     <Button asChild className="w-full bg-accent hover:bg-accent/90 text-accent-foreground">
-                      <a href="https://wa.me/56941165158" target="_blank" rel="noopener noreferrer">
+                      <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer">
                         Contratar Agente
                       </a>
                     </Button>
@@ -233,7 +234,7 @@ export default function AgentesIAPage() {
               Contrata tu agente IA hoy y transforma la manera en que manejas tus casos legales.
             </p>
             <Button size="lg" variant="secondary" className="mt-8" asChild>
-              <a href="https://wa.me/56941165158" target="_blank" rel="noopener noreferrer">
+              <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer">
                 Contratar Agente IA
               </a>
             </Button>

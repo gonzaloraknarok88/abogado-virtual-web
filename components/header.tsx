@@ -1,9 +1,10 @@
 "use client"
 
+import { WHATSAPP_URL, BOOKING_URL } from "@/lib/contact"
 import { useState } from "react"
 import Link from "next/link"
 import Image from "next/image"
-import { Menu, X, Phone } from "lucide-react"
+import { Menu, X, Phone, CalendarDays } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 
@@ -55,9 +56,15 @@ export function Header() {
 
           {/* CTA Buttons */}
           <div className="flex items-center gap-2">
+            <Button asChild size="sm" variant="outline" className="hidden sm:flex">
+              <a href={BOOKING_URL} target="_blank" rel="noopener noreferrer">
+                <CalendarDays className="w-4 h-4 mr-2" />
+                Agendar
+              </a>
+            </Button>
             <Button asChild size="sm" className="hidden sm:flex">
               <a
-                href="https://wa.me/56941165158"
+                href={WHATSAPP_URL}
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -86,9 +93,15 @@ export function Header() {
                       {item.label}
                     </Link>
                   ))}
-                  <Button asChild className="mt-4">
+                  <Button asChild variant="outline" className="mt-4">
+                    <a href={BOOKING_URL} target="_blank" rel="noopener noreferrer">
+                      <CalendarDays className="w-4 h-4 mr-2" />
+                      Agendar hora
+                    </a>
+                  </Button>
+                  <Button asChild>
                     <a
-                      href="https://wa.me/56941165158"
+                      href={WHATSAPP_URL}
                       target="_blank"
                       rel="noopener noreferrer"
                     >

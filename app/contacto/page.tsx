@@ -6,6 +6,7 @@ import { useState } from "react"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { WhatsAppButton } from "@/components/whatsapp-button"
+import { BookingSection } from "@/components/booking-section"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -22,25 +23,34 @@ import {
   CalendarDays,
   Clock,
   Send,
+  Video,
 } from "lucide-react"
+import { whatsappNumbers, whatsappMessageUrl, office, BOOKING_URL } from "@/lib/contact"
 
 const consultationTypes = [
-  "Herencias",
+  "Familia (divorcios, visitas, pensión de alimentos)",
+  "Empresas y Pymes (sociedades, marcas, contratos)",
+  "Ley Karin (protocolos)",
+  "Revisión de Finiquito (gratis)",
+  "Derecho Laboral (despidos, autodespidos, tutelas)",
+  "Herencias (posesión efectiva, partición)",
+  "Inmobiliario (arriendos, desalojos)",
   "Trámites Legales",
   "Escrituras",
   "Testamentos",
-  "Familia",
   "Inmigración",
   "Acoso Laboral",
-  "Derecho Laboral",
-  "Ley Karin",
   "Agentes IA",
   "Marketing Pro",
   "Otro",
 ]
 
+const modalities = [
+  "Presencial (Providencia, solo con agendamiento previo)",
+  "Online por Google Meet (urgencias o fuera de horario)",
+]
+
 const timeSlots = [
-  "09:00",
   "10:00",
   "11:00",
   "12:00",
@@ -49,6 +59,7 @@ const timeSlots = [
   "16:00",
   "17:00",
   "18:00",
+  "18:30+",
 ]
 
 export default function ContactoPage() {
@@ -58,16 +69,20 @@ export default function ContactoPage() {
     email: "",
     telefono: "",
     tipo: "",
+    modalidad: "",
     hora: "",
     mensaje: "",
   })
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
+    // The secondary button sends the same booking to the second number
+    const submitter = (e.nativeEvent as SubmitEvent).submitter as HTMLButtonElement | null
+    const number = submitter?.dataset.number ?? whatsappNumbers.primary.number
     // Create WhatsApp message
-    const message = `Hola, me gustaría agendar una consulta:\n\nNombre: ${formData.nombre}\nEmail: ${formData.email}\nTeléfono: ${formData.telefono}\nTipo de consulta: ${formData.tipo}\nFecha preferida: ${date ? date.toLocaleDateString("es-CL") : "Por definir"}\nHora: ${formData.hora}\n\nMensaje: ${formData.mensaje}`
+    const message = `Hola, me gustaría agendar una consulta:\n\nNombre: ${formData.nombre}\nEmail: ${formData.email}\nTeléfono: ${formData.telefono}\nTipo de consulta: ${formData.tipo}\nModalidad: ${formData.modalidad}\nFecha preferida: ${date ? date.toLocaleDateString("es-CL") : "Por definir"}\nHora: ${formData.hora}\n\nMensaje: ${formData.mensaje}`
     
-    window.open(`https://wa.me/56941165158?text=${encodeURIComponent(message)}`, "_blank")
+    window.open(whatsappMessageUrl(number, message), "_blank")
   }
 
   return (
@@ -85,12 +100,19 @@ export default function ContactoPage() {
                 Agenda tu Consulta
               </h1>
               <p className="text-muted-foreground mt-4 text-lg">
-                Consultas desde $20.000. Selecciona fecha, hora y tipo de consulta.
-                Te contactaremos para confirmar.
+                Reserva tu hora directamente en nuestro calendario, o envíanos tu solicitud por WhatsApp.
               </p>
+              <Button asChild size="lg" className="mt-8">
+                <a href={BOOKING_URL} target="_blank" rel="noopener noreferrer">
+                  <CalendarDays className="w-5 h-5 mr-2" />
+                  Reservar hora en Google Calendar
+                </a>
+              </Button>
             </div>
           </div>
         </section>
+
+        <BookingSection />
 
         {/* Contact Form & Info */}
         <section className="py-16 bg-background">
@@ -104,33 +126,41 @@ export default function ContactoPage() {
                     <CardDescription>Contáctanos por cualquier medio</CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-4">
-                    <a
-                      href="https://wa.me/56941165158"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center gap-3 p-3 rounded-lg bg-[#25D366]/10 hover:bg-[#25D366]/20 transition-colors"
-                    >
-                      <div className="p-2 rounded-full bg-[#25D366] text-white">
-                        <MessageCircle className="w-5 h-5" />
-                      </div>
-                      <div>
-                        <p className="font-medium text-foreground">WhatsApp</p>
-                        <p className="text-sm text-muted-foreground">+56 9 4116 5158</p>
-                      </div>
-                    </a>
+                    {[whatsappNumbers.primary, whatsappNumbers.secondary].map((contact, index) => (
+                      <a
+                        key={contact.number}
+                        href={contact.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-3 p-3 rounded-lg bg-[#25D366]/10 hover:bg-[#25D366]/20 transition-colors"
+                      >
+                        <div className="p-2 rounded-full bg-[#25D366] text-white">
+                          <MessageCircle className="w-5 h-5" />
+                        </div>
+                        <div>
+                          <p className="font-medium text-foreground">{index === 0 ? "Línea Principal" : "Línea Secundaria"}</p>
+                          <p className="text-sm text-muted-foreground">{contact.display}</p>
+                        </div>
+                      </a>
+                    ))}
 
-                    <a
-                      href="tel:+56941165158"
-                      className="flex items-center gap-3 p-3 rounded-lg bg-primary/10 hover:bg-primary/20 transition-colors"
-                    >
+                    <div className="flex items-center gap-3 p-3 rounded-lg bg-primary/10">
                       <div className="p-2 rounded-full bg-primary text-primary-foreground">
                         <Phone className="w-5 h-5" />
                       </div>
                       <div>
                         <p className="font-medium text-foreground">Teléfono</p>
-                        <p className="text-sm text-muted-foreground">+56 9 4116 5158</p>
+                        {[whatsappNumbers.primary, whatsappNumbers.secondary].map((contact) => (
+                          <a
+                            key={contact.number}
+                            href={contact.tel}
+                            className="block text-sm text-muted-foreground hover:text-primary transition-colors"
+                          >
+                            {contact.display}
+                          </a>
+                        ))}
                       </div>
-                    </a>
+                    </div>
 
                     <a
                       href="mailto:abogadarayenaraya@gmail.com"
@@ -145,38 +175,45 @@ export default function ContactoPage() {
                       </div>
                     </a>
 
-                    <div className="flex items-center gap-3 p-3 rounded-lg bg-muted">
+                    <a
+                      href={office.mapsUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-3 p-3 rounded-lg bg-muted hover:bg-muted/80 transition-colors"
+                    >
                       <div className="p-2 rounded-full bg-muted-foreground/20 text-muted-foreground">
                         <MapPin className="w-5 h-5" />
                       </div>
                       <div>
-                        <p className="font-medium text-foreground">Ubicación</p>
-                        <p className="text-sm text-muted-foreground">Chile (Atención Virtual)</p>
+                        <p className="font-medium text-foreground">Oficina</p>
+                        <p className="text-sm text-muted-foreground">{office.address}</p>
+                        <p className="text-xs text-muted-foreground">{office.reference}</p>
                       </div>
-                    </div>
+                    </a>
                   </CardContent>
                 </Card>
 
                 <Card className="bg-primary text-primary-foreground">
                   <CardContent className="pt-6">
-                    <h3 className="font-semibold mb-2">Horario de Atención</h3>
-                    <div className="space-y-2 text-sm text-primary-foreground/80">
-                      <div className="flex justify-between">
-                        <span>Lunes - Viernes</span>
-                        <span>09:00 - 18:00</span>
+                    <h3 className="font-semibold mb-4">Horario de Atención</h3>
+                    <div className="space-y-4 text-sm text-primary-foreground/80">
+                      <div className="flex gap-3">
+                        <MapPin className="w-4 h-4 mt-0.5 flex-shrink-0" />
+                        <div>
+                          <p className="font-medium text-primary-foreground">Atención Presencial</p>
+                          <p>Solo con agendamiento previo.</p>
+                          <p>{office.address} ({office.reference}).</p>
+                          <p>{office.hours}</p>
+                        </div>
                       </div>
-                      <div className="flex justify-between">
-                        <span>Sábado</span>
-                        <span>09:00 - 13:00</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span>Domingo</span>
-                        <span>Cerrado</span>
+                      <div className="flex gap-3">
+                        <Video className="w-4 h-4 mt-0.5 flex-shrink-0" />
+                        <div>
+                          <p className="font-medium text-primary-foreground">Atención Online</p>
+                          <p>Vía Google Meet. Exclusivo para urgencias o fuera de horario (después de las 18:30 hrs.).</p>
+                        </div>
                       </div>
                     </div>
-                    <p className="mt-4 text-xs text-primary-foreground/60">
-                      WhatsApp disponible 24/7 para mensajes
-                    </p>
                   </CardContent>
                 </Card>
               </div>
@@ -190,7 +227,11 @@ export default function ContactoPage() {
                       Agendar Consulta
                     </CardTitle>
                     <CardDescription>
-                      Completa el formulario y te contactaremos para confirmar
+                      ¿Prefieres WhatsApp? Completa el formulario y te contactaremos para confirmar. También puedes{" "}
+                      <a href={BOOKING_URL} target="_blank" rel="noopener noreferrer" className="text-primary underline">
+                        reservar directo en el calendario
+                      </a>
+                      .
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
@@ -252,6 +293,29 @@ export default function ContactoPage() {
                         </div>
                       </div>
 
+                      <div className="space-y-2">
+                        <Label>Modalidad *</Label>
+                        <Select
+                          value={formData.modalidad}
+                          onValueChange={(value) => setFormData({ ...formData, modalidad: value })}
+                          required
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Presencial u online" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {modalities.map((modality) => (
+                              <SelectItem key={modality} value={modality}>
+                                {modality}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <p className="text-xs text-muted-foreground">
+                          Presencial: {office.hours} Online: urgencias o después de las 18:30 hrs.
+                        </p>
+                      </div>
+
                       <div className="grid sm:grid-cols-2 gap-6">
                         <div className="space-y-2">
                           <Label>Fecha preferida</Label>
@@ -260,7 +324,12 @@ export default function ContactoPage() {
                             selected={date}
                             onSelect={setDate}
                             className="rounded-md border"
-                            disabled={(date) => date < new Date() || date.getDay() === 0}
+                            disabled={(date) =>
+                              date < new Date() ||
+                              (formData.modalidad.startsWith("Presencial")
+                                ? date.getDay() === 0 || date.getDay() === 6
+                                : date.getDay() === 0)
+                            }
                           />
                         </div>
                         <div className="space-y-2">
@@ -294,9 +363,17 @@ export default function ContactoPage() {
                         />
                       </div>
 
-                      <Button type="submit" size="lg" className="w-full">
+                      <Button type="submit" size="lg" className="w-full" data-number={whatsappNumbers.primary.number}>
                         <Send className="w-5 h-5 mr-2" />
                         Enviar Solicitud
+                      </Button>
+                      <Button
+                        type="submit"
+                        variant="link"
+                        className="w-full"
+                        data-number={whatsappNumbers.secondary.number}
+                      >
+                        o enviar al WhatsApp {whatsappNumbers.secondary.display}
                       </Button>
                     </form>
                   </CardContent>

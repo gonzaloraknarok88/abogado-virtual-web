@@ -1,3 +1,4 @@
+import { WHATSAPP_URL } from "@/lib/contact"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { WhatsAppButton } from "@/components/whatsapp-button"
@@ -205,7 +206,7 @@ export default function MarketingPage() {
                       }`}
                       variant={plan.popular ? "default" : "outline"}
                     >
-                      <a href="https://wa.me/56941165158" target="_blank" rel="noopener noreferrer">
+                      <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer">
                         Contratar Plan
                       </a>
                     </Button>
@@ -243,7 +244,7 @@ export default function MarketingPage() {
                       ))}
                     </ul>
                     <Button asChild className="w-full mt-6">
-                      <a href="https://wa.me/56941165158" target="_blank" rel="noopener noreferrer">
+                      <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer">
                         Contratar Pack
                       </a>
                     </Button>
@@ -264,7 +265,7 @@ export default function MarketingPage() {
               Contáctanos hoy y empieza a destacar en el mundo digital.
             </p>
             <Button size="lg" variant="outline" className="mt-8 border-secondary-foreground/30 text-secondary-foreground hover:bg-secondary-foreground/10 bg-transparent" asChild>
-              <a href="https://wa.me/56941165158" target="_blank" rel="noopener noreferrer">
+              <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer">
                 Contactar Ahora
               </a>
             </Button>

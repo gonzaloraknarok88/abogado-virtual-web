@@ -1,6 +1,8 @@
+import { WHATSAPP_URL, BOOKING_URL } from "@/lib/contact"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { WhatsAppButton } from "@/components/whatsapp-button"
+import { PricingCatalog } from "@/components/pricing-catalog"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -149,24 +151,26 @@ export default function ServiciosPage() {
               </p>
               <div className="flex flex-wrap justify-center gap-4 mt-8">
                 <Button asChild size="lg">
-                  <a href="https://wa.me/56941165158" target="_blank" rel="noopener noreferrer">
+                  <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer">
                     <MessageCircle className="w-5 h-5 mr-2" />
                     Consultar por WhatsApp
                   </a>
                 </Button>
                 <Button asChild size="lg" variant="outline">
-                  <Link href="/contacto">
+                  <a href={BOOKING_URL} target="_blank" rel="noopener noreferrer">
                     <Calendar className="w-5 h-5 mr-2" />
                     Agendar Consulta
-                  </Link>
+                  </a>
                 </Button>
               </div>
             </div>
           </div>
         </section>
 
+        <PricingCatalog />
+
         {/* Services Grid */}
-        <section className="py-16 bg-background">
+        <section className="py-16 bg-card">
           <div className="container mx-auto px-4">
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {services.map((service) => (
@@ -207,7 +211,7 @@ export default function ServiciosPage() {
               Agenda tu consulta virtual desde $20.000. Atención inmediata por WhatsApp.
             </p>
             <Button size="lg" variant="secondary" className="mt-8" asChild>
-              <a href="https://wa.me/56941165158" target="_blank" rel="noopener noreferrer">
+              <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer">
                 <MessageCircle className="w-5 h-5 mr-2" />
                 Agendar Ahora
               </a>

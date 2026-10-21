@@ -2,6 +2,7 @@
 
 import Image from "next/image"
 import Link from "next/link"
+import { BOOKING_URL } from "@/lib/contact"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
@@ -131,10 +132,10 @@ export function AboutSection() {
             {/* CTA */}
             <div className="flex flex-wrap gap-4 pt-4">
               <Button asChild>
-                <Link href="/contacto">
+                <a href={BOOKING_URL} target="_blank" rel="noopener noreferrer">
                   Agendar Consulta
                   <ArrowRight className="w-4 h-4 ml-2" />
-                </Link>
+                </a>
               </Button>
               <Button variant="outline" asChild>
                 <Link href="/portafolio">

@@ -1,3 +1,4 @@
+import { WHATSAPP_URL } from "@/lib/contact"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { WhatsAppButton } from "@/components/whatsapp-button"
@@ -149,7 +150,7 @@ export default function LeyKarinPage() {
               </p>
               <div className="flex flex-wrap justify-center gap-4 mt-8">
                 <Button size="lg" className="bg-secondary hover:bg-secondary/90 text-secondary-foreground" asChild>
-                  <a href="https://wa.me/56941165158" target="_blank" rel="noopener noreferrer">
+                  <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer">
                     Solicitar Demo
                   </a>
                 </Button>
@@ -264,7 +265,7 @@ export default function LeyKarinPage() {
                       }`}
                       variant={plan.popular ? "default" : "outline"}
                     >
-                      <a href="https://wa.me/56941165158" target="_blank" rel="noopener noreferrer">
+                      <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer">
                         {plan.price === "Personalizado" ? "Solicitar Cotización" : "Contratar Plan"}
                       </a>
                     </Button>
@@ -286,7 +287,7 @@ export default function LeyKarinPage() {
               a cumplir con la normativa.
             </p>
             <Button size="lg" variant="outline" className="mt-8 border-secondary-foreground/30 text-secondary-foreground hover:bg-secondary-foreground/10 bg-transparent" asChild>
-              <a href="https://wa.me/56941165158" target="_blank" rel="noopener noreferrer">
+              <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer">
                 Solicitar Demo Gratuita
               </a>
             </Button>

@@ -1,6 +1,7 @@
 import Link from "next/link"
 import Image from "next/image"
-import { Mail, Phone, MapPin } from "lucide-react"
+import { Mail, Phone, MapPin, Clock, Video } from "lucide-react"
+import { whatsappNumbers, office } from "@/lib/contact"
 
 const navItems = [
   { href: "/servicios", label: "Servicios Legales" },
@@ -82,17 +83,19 @@ export function Footer() {
           <div>
             <h3 className="font-semibold text-foreground mb-4">Contacto</h3>
             <ul className="space-y-3">
-              <li>
-                <a
-                  href="https://wa.me/56941165158"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors"
-                >
-                  <Phone className="w-4 h-4" />
-                  +56 9 4116 5158
-                </a>
-              </li>
+              {[whatsappNumbers.primary, whatsappNumbers.secondary].map((contact) => (
+                <li key={contact.number}>
+                  <a
+                    href={contact.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors"
+                  >
+                    <Phone className="w-4 h-4" />
+                    WhatsApp {contact.display}
+                  </a>
+                </li>
+              ))}
               <li>
                 <a
                   href="mailto:abogadarayenaraya@gmail.com"
@@ -102,9 +105,19 @@ export function Footer() {
                   abogadarayenaraya@gmail.com
                 </a>
               </li>
-              <li className="flex items-center gap-2 text-sm text-muted-foreground">
-                <MapPin className="w-4 h-4" />
-                Chile
+              <li className="flex items-start gap-2 text-sm text-muted-foreground">
+                <MapPin className="w-4 h-4 mt-0.5 flex-shrink-0" />
+                <span>
+                  {office.address} ({office.reference}). Atención presencial solo con agendamiento previo.
+                </span>
+              </li>
+              <li className="flex items-start gap-2 text-sm text-muted-foreground">
+                <Clock className="w-4 h-4 mt-0.5 flex-shrink-0" />
+                <span>{office.hours}</span>
+              </li>
+              <li className="flex items-start gap-2 text-sm text-muted-foreground">
+                <Video className="w-4 h-4 mt-0.5 flex-shrink-0" />
+                <span>Online vía Google Meet: urgencias o fuera de horario (después de las 18:30 hrs.)</span>
               </li>
             </ul>
           </div>

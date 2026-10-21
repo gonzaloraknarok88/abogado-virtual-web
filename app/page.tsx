@@ -11,6 +11,8 @@ import { MarketingPreview } from "@/components/home/marketing-preview"
 import { LeyKarinPreview } from "@/components/home/ley-karin-preview"
 import { TestimonialsSection } from "@/components/home/testimonials-section"
 import { CTASection } from "@/components/home/cta-section"
+import { PricingCatalog } from "@/components/pricing-catalog"
+import { BookingSection } from "@/components/booking-section"
 
 export default function HomePage() {
   return (
@@ -18,6 +20,8 @@ export default function HomePage() {
       <Header />
       <main>
         <HeroSection />
+        <PricingCatalog />
+        <BookingSection />
         <ServicesSearch />
         <AboutSection />
         <ImageCarousel />

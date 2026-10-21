@@ -1,5 +1,6 @@
 "use client"
 
+import { WHATSAPP_URL, whatsappNumbers, BOOKING_URL } from "@/lib/contact"
 import { useEffect, useState } from "react"
 import Image from "next/image"
 import Link from "next/link"
@@ -154,14 +155,14 @@ export function HeroSection() {
             {/* CTA Buttons */}
             <div className="flex flex-wrap gap-4 pt-4">
               <Button size="lg" asChild className="group">
-                <Link href="/contacto">
+                <a href={BOOKING_URL} target="_blank" rel="noopener noreferrer">
                   <Calendar className="w-5 h-5 mr-2 group-hover:scale-110 transition-transform" />
                   Agendar Consulta
-                </Link>
+                </a>
               </Button>
               <Button size="lg" variant="outline" asChild className="group bg-transparent">
                 <a
-                  href="https://wa.me/56941165158"
+                  href={WHATSAPP_URL}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -224,7 +225,7 @@ export function HeroSection() {
                 Consultas Online
               </div>
               <div className="absolute -bottom-4 -left-4 bg-secondary text-secondary-foreground px-4 py-2 rounded-full text-sm font-medium shadow-lg animate-bounce" style={{ animationDelay: "0.5s" }}>
-                +56 9 4116 5158
+                {whatsappNumbers.primary.display} / {whatsappNumbers.secondary.display}
               </div>
             </div>
           </div>

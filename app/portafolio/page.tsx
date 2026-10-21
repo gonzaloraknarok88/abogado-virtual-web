@@ -1,3 +1,4 @@
+import { WHATSAPP_URL } from "@/lib/contact"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { WhatsAppButton } from "@/components/whatsapp-button"
@@ -221,7 +222,7 @@ export default function PortafolioPage() {
               Agenda tu consulta hoy y deja tu caso en manos de profesionales.
             </p>
             <Button size="lg" variant="secondary" className="mt-8" asChild>
-              <a href="https://wa.me/56941165158" target="_blank" rel="noopener noreferrer">
+              <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer">
                 Contactar Ahora
               </a>
             </Button>
