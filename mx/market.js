@@ -48,7 +48,7 @@ window.ABV_MARKET = {
       price: 10390, installments: 2, pay: "En 2 cuotas", tag: "Más solicitado" },
     { id: "familia-integral", area: "familia", name: "Pensión alimenticia, guarda y custodia",
       desc: "Demanda, aumento, reducción o cancelación de pensión alimenticia, guarda y custodia y convivencias. Incluye la negociación previa.",
-      price: 18600, installments: 3, pay: "En 3 cuotas mensuales" },
+      price: 18590, pay: "En 3 cuotas mensuales" },
 
     // Empresas y PYMES
     { id: "nom-035", area: "empresas", name: "NOM-035 y protocolo contra acoso",
