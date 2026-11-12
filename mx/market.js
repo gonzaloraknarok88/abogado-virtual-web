@@ -11,6 +11,8 @@ window.ABV_MARKET = {
   currencySuffix: "MXN",
   bookingUrl: "/agendar", // calendario de agendamiento propio (hora del centro, CDMX)
   catalogUrl: "/catalogo", // el generador lo cambia por la dirección del sitio del catálogo
+  // Medición: pegue aquí los IDs y vuelva a publicar. Vacíos = no se carga nada.
+  analytics: { ga4: "", metaPixel: "" }, // ej. ga4: "G-XXXXXXXXXX", metaPixel: "123456789012345"
   office: "Plaza Carso, Lago Zúrich 245, Puerta 5, Torre Frisko, Piso 7, Oficina 740, Col. Ampliación Granada, Miguel Hidalgo, C.P. 11529, Ciudad de México",
   whatsapp: [
     { key: "mx", label: "WhatsApp México", number: "525612133685", display: "+52 56 1213 3685" },

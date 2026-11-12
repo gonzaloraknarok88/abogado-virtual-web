@@ -190,6 +190,7 @@
       const origen = ["utm_source", "utm_campaign", "utm_content"].map((k) => utm.get(k)).filter(Boolean).join(" / ");
       lineas.push("Origen: " + (origen || location.hostname));
       window.open("https://wa.me/" + numero + "?text=" + encodeURIComponent(lineas.join("\n")), "_blank", "noopener");
+      document.dispatchEvent(new CustomEvent("abv:cita", { detail: { modo: st.modo } }));
 
       const titulo = `AboVirtual México · ${servicio}`;
       const detalle = `Cita ${MODOS[st.modo].corto.toLowerCase()} con AboVirtual México. Asunto: ${servicio}. Confirmación por WhatsApp +${numero}.`;

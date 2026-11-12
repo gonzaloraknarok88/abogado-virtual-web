@@ -121,6 +121,7 @@ def head(slug: str, titulo: str, desc: str, extra_ld: dict | None = None) -> str
 <script src="/assets/catalog.js" defer></script>
 <script src="/mx/site.js" defer></script>
 <script src="/mx/agenda.js" defer></script>
+<script src="/mx/analytics.js" defer></script>
 </head>
 """
 
@@ -269,11 +270,11 @@ def sede(titulo: str = "Nuestra oficina en la Ciudad de México") -> str:
 """
 
 
-def agenda(titulo: str = "Agende su reunión privada", clase: str = "section") -> str:
+def agenda(titulo: str = "Agende su reunión privada", clase: str = "section", h: str = "h2") -> str:
     return f"""<section class="{clase}" id="agenda"><div class="wrap agenda-wrap">
   <div class="agenda-wrap__intro">
     <p class="eyebrow">Calendario de agendamiento</p>
-    <h2>{titulo}</h2>
+    <{h}>{titulo}</{h}>
     <div class="flag flag--thin" aria-hidden="true"></div>
     <p>Elija modalidad, día y hora. Su solicitud llega a nuestro WhatsApp y un abogado le confirma la cita.</p>
     <ul>
@@ -411,9 +412,9 @@ def inicio() -> str:
     pasos = [("01", "Escríbanos por WhatsApp", "Un abogado revisa su caso con total confidencialidad."),
              ("02", "Reunión privada", "Por videollamada, en su horario, desde su oficina o su casa. O con cita en la CDMX."),
              ("03", "Nos encargamos de todo", "Le reportamos cada avance. Usted no persigue a nadie.")]
-    return head("index", "AboVirtual México · Abogados para empresarios, ejecutivos y familias de patrimonio",
-                "Firma legal e inmobiliaria en México: divorcios desde $5,190 MXN, familia, empresas, patrimonio e inversiones. "
-                "Precio claro, total discreción y atención en CDMX, Monterrey, Guadalajara, Cancún, Acapulco y Querétaro.") + header("index") + f"""
+    return head("index", "AboVirtual México · Abogados para empresarios y familias",
+                "Firma legal e inmobiliaria en todo México: divorcios desde $5,190 MXN, familia, empresas y patrimonio. "
+                "Precio claro, discreción y oficina en Plaza Carso, CDMX.") + header("index") + f"""
 <section class="hero">
   <video class="hero__bg" src="/media/hf3.mp4" poster="/media/hf3.webp" autoplay muted loop playsinline preload="metadata" aria-hidden="true"></video>
   <div class="wrap hero__in">
@@ -500,7 +501,7 @@ def familia() -> str:
         ("¿Atienden fuera de la CDMX?", "Sí. Atendemos en línea en todo México y coordinamos los trámites en cada estado."),
     ]
     return head("familia", "Divorcio y derecho familiar · AboVirtual México",
-                "Divorcio por mutuo acuerdo $5,190 MXN, divorcio unilateral $10,390 MXN en 2 cuotas, pensión, guarda y custodia $18,590 MXN en 3 cuotas. Capitulaciones y planeación patrimonial.", ld) + header("familia") + phero(
+                "Divorcio de mutuo acuerdo $5,190 MXN, unilateral $10,390 en 2 cuotas, pensión y custodia $18,590 en 3 cuotas. Capitulaciones y planeación patrimonial.", ld) + header("familia") + phero(
         "Familia y patrimonio", "Área I · Familia y patrimonio", "Proteja a su familia.", "Y lo que construyó.",
         'Divorcios, pensión, custodia y planeación patrimonial con estrategia, discreción y precio por escrito. Sin <span class="pain">juicios eternos</span> ni <span class="pain">embargos</span> sorpresa.',
         "/media/hf1.webp", wa("Hola, quiero orientación sobre un asunto de familia.", "Hablar con un abogado", "btn btn--gold", "familia_wa") + '<a class="btn btn--line" href="#servicios">Ver servicios y precios</a>') + f"""
@@ -537,7 +538,7 @@ def empresas() -> str:
     sectores = [("Corporativos", "Santa Fe, Polanco, San Pedro"), ("Industria", "Monterrey, Querétaro, Guadalajara"),
                 ("Hotelería y turismo", "Cancún, Riviera Maya, Acapulco"), ("Comercio y servicios", "Todo México")]
     return head("empresas", "Abogados para empresas y corporativos · AboVirtual México",
-                "NOM-035 desde $5,190 MXN, constitución de sociedades desde $12,990 MXN, iguala mensual, empresa familiar, contratos y defensa laboral para corporativos, industria y hotelería.") + header("empresas") + phero(
+                "NOM-035 desde $5,190 MXN, sociedades desde $12,990, iguala mensual, empresa familiar, contratos y defensa laboral para corporativos, industria y hotelería.") + header("empresas") + phero(
         "Empresas y corporativos", "Área II · Empresas y corporativos", "Su área legal externa.", "Sin nómina extra.",
         'Laboral, NOM-035, sociedades, contratos y empresa familiar para corporativos, industria y hotelería. Menos <span class="pain">demandas</span>, menos <span class="pain">estrés corporativo</span>, más tiempo para dirigir.',
         "/media/hf2.webp", wa("Hola, quiero una reunión corporativa con AboVirtual México.", "Agendar reunión corporativa", "btn btn--gold", "empresas_wa") + '<a class="btn btn--line" href="#servicios">Ver servicios</a>') + f"""
@@ -572,7 +573,7 @@ def patrimonio() -> str:
              ("03", "Comprar", "Promesa, notaría y escrituración, con su abogado presente."),
              ("04", "Rentabilizar", "Mejoras, renta y administración con reporte periódico.")]
     return head("patrimonio", "Patrimonio 360 · Inmobiliario e inversiones · AboVirtual México",
-                "Revisión legal de inmuebles, compraventa, arrendamiento blindado, fideicomiso en zona restringida e inversiones inmobiliarias 360 en CDMX, Monterrey, Guadalajara, Cancún y Acapulco.") + header("patrimonio") + phero(
+                "Revisión legal de inmuebles, compraventa, arrendamiento blindado, fideicomiso en zona restringida e inversiones inmobiliarias 360 en todo México.") + header("patrimonio") + phero(
         "Patrimonio 360", "Área III · Patrimonio 360", "Invierta con abogado.", "No con suerte.",
         'Compra, venta, renta e inversión inmobiliaria con respaldo legal en cada paso. Evite <span class="pain">gravámenes ocultos</span>, <span class="pain">inquilinos morosos</span> y operaciones que no se pueden escriturar.',
         "/media/hf3.webp", wa("Hola, quiero asesoría inmobiliaria o de inversión con AboVirtual México.", "Hablar con un asesor", "btn btn--gold", "patrimonio_wa") + '<a class="btn btn--line" href="#servicios">Ver servicios</a>') + f"""
@@ -713,7 +714,7 @@ def contacto() -> str:
     perfiles = ["Dueño de empresa", "Director o ejecutivo", "Profesional independiente", "Inversionista", "Otro"]
     opts = lambda xs: "".join(f"<option>{x}</option>" for x in xs)
     return head("contacto", "Contacto · Agende una reunión privada · AboVirtual México",
-                "Agende una reunión privada con AboVirtual México: oficina en Plaza Carso (Torre Frisko, Miguel Hidalgo, CDMX), videollamada en todo México o WhatsApp +52 56 1213 3685.") + header("contacto") + phero(
+                "Agende una reunión privada: oficina en Plaza Carso, Torre Frisko (CDMX), videollamada en todo México o WhatsApp +52 56 1213 3685.") + header("contacto") + phero(
         "Contacto", "Contacto", "Agende una", "reunión privada.",
         "Déjenos sus datos y un abogado le escribe por WhatsApp. Si prefiere adelantar, escríbanos directo.",
         "/media/hf3.webp", wa("Hola, quiero agendar una reunión privada con AboVirtual México.", "WhatsApp +52 56 1213 3685", "btn btn--gold", "contacto_wa")) + f"""
@@ -821,25 +822,35 @@ def agendar() -> str:
 <section class="section" style="padding-bottom:0"><div class="wrap">
   <p class="crumbs"><a href="{'/mx/catalogo' if SITIO == 'catalogo' else '/mx/'}">Inicio</a><span>/</span>Agendar</p>
 </div></section>
-{agenda("Agende su reunión privada")}
+{agenda("Agende su reunión privada", h="h1")}
 {sede()}
 """ + footer()
 
 
 def aviso() -> str:
-    cuerpo = (FUENTE / "aviso-de-privacidad.html").read_text(encoding="utf-8")
-    articulo = cuerpo[cuerpo.index('<article'):cuerpo.index('</article>') + len('</article>')]
-    articulo = articulo.replace("AboVirtual México (en adelante, «AboVirtual») es responsable",
-                                f"AboVirtual México (en adelante, «AboVirtual»), con domicilio en {DIRECCION_TXT}, es responsable")
+    secciones = [
+        ("Responsable", f"<p>AboVirtual México (en adelante, «AboVirtual»), con domicilio en {DIRECCION_TXT}, es responsable del tratamiento de sus datos personales, conforme a la Ley Federal de Protección de Datos Personales en Posesión de los Particulares (LFPDPPP). Contacto para temas de privacidad: WhatsApp +52 56 1213 3685.</p>"),
+        ("Datos que tratamos", "<p>Nombre, teléfono o WhatsApp, correo electrónico, estado o ciudad, la fecha y hora de cita que usted elija y la descripción de su asunto que decida compartir. No solicitamos datos sensibles por este sitio; si su caso los involucra, los trataremos solo con su consentimiento expreso y por escrito.</p>"
+                               "<p>El cotizador, el formulario de contacto y el calendario de este sitio no guardan sus datos: la información viaja únicamente en el mensaje de WhatsApp que usted decide enviar.</p>"),
+        ("Para qué los usamos", "<ul><li>Responder su consulta, cotizar y agendar su cita.</li><li>Prestar el servicio legal contratado y darle seguimiento.</li>"
+                                "<li>Finalidad secundaria: enviarle información sobre nuestros servicios. Puede negarse en cualquier momento escribiendo «BAJA» por WhatsApp; su negativa no afecta el servicio contratado.</li></ul>"),
+        ("Con quién los compartimos", "<p>Con el abogado con cédula profesional que lleve su caso en México y con el equipo central de AboVirtual que coordina la atención y el control de calidad, incluido en Chile, solo para las finalidades anteriores. Utilizamos proveedores tecnológicos (mensajería, calendario y almacenamiento) que tratan los datos por nuestra cuenta y bajo confidencialidad. No vendemos ni cedemos sus datos.</p>"),
+        ("Medición del sitio", "<p>Si el sitio activa herramientas de medición (Google Analytics o Meta Pixel), estas registran datos de navegación como páginas visitadas y botones usados, sin su nombre ni su teléfono, para mejorar el sitio y nuestras campañas. Puede bloquearlas desde la configuración de su navegador.</p>"),
+        ("Sus derechos ARCO", "<p>Usted puede acceder, rectificar, cancelar u oponerse al tratamiento de sus datos, así como revocar su consentimiento, escribiendo por WhatsApp al +52 56 1213 3685 con su nombre y su solicitud. Le respondemos en un plazo máximo de 20 días hábiles.</p>"),
+        ("Cambios a este aviso", "<p>Cualquier cambio a este aviso se publicará en esta página. Última actualización: noviembre de 2026.</p>"),
+    ]
+    articulo = ('<article class="wrap legal">\n  <p class="eyebrow">Aviso de privacidad integral</p>\n  <h1>Aviso de privacidad</h1>\n'
+                '  <div class="flag flag--thin" aria-hidden="true"></div>\n'
+                + "".join(f"  <h2>{t}</h2>\n  {c}\n" for t, c in secciones) + "</article>")
     return head("aviso-de-privacidad", "Aviso de privacidad · AboVirtual México",
-                "Aviso de privacidad integral de AboVirtual México conforme a la LFPDPPP.") + header("aviso") + articulo + "\n" + footer()
+                "Aviso de privacidad integral de AboVirtual México conforme a la LFPDPPP: datos que tratamos, finalidades y derechos ARCO.") + header("aviso") + articulo + "\n" + footer()
 
 
 PAGINAS_WEB = {"index": inicio, "familia": familia, "empresas": empresas, "patrimonio": patrimonio, "ciber": ciber,
                "firma": firma, "metodo": metodo, "contacto": contacto, "agendar": agendar, "aviso-de-privacidad": aviso}
 PAGINAS_CAT = {"index": catalogo, "agendar": agendar, "aviso-de-privacidad": aviso}
 WEB_SLUGS = ("familia", "empresas", "patrimonio", "ciber", "firma", "metodo", "contacto")
-ACTIVOS = ("mx.css", "web.css", "catalogo.css", "market.js", "site.js", "agenda.js", "apple-icon.png",
+ACTIVOS = ("mx.css", "web.css", "catalogo.css", "market.js", "site.js", "agenda.js", "analytics.js", "apple-icon.png",
            "logo-azul.webp", "logo-azul-sm.webp", "logo-azul-head.webp", "logo-azul-crop.webp",
            "logo-negro.webp", "logo-negro-sm.webp", "logo-negro-head.webp", "logo-negro-crop.webp")
 
@@ -881,8 +892,19 @@ def construir(sitio: str, paginas: dict) -> None:
         shutil.copy2(REPO / "media" / "hf3.mp4", destino / "media" / "hf3.mp4")
     vercel = json.loads((REPO / "vercel.json").read_text(encoding="utf-8"))
     vercel.pop("redirects", None)
+    csp = vercel["headers"][0]["headers"][0]
+    csp["value"] = (csp["value"]
+        .replace("script-src 'self'", "script-src 'self' https://www.googletagmanager.com https://connect.facebook.net")
+        .replace("img-src 'self' data:", "img-src 'self' data: https://www.google-analytics.com https://www.googletagmanager.com https://www.facebook.com")
+        .replace("connect-src 'self'", "connect-src 'self' https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com https://www.facebook.com")
+        .replace("frame-src https://www.google.com https://maps.google.com", "frame-src https://www.google.com https://maps.google.com https://www.facebook.com"))
     (destino / "vercel.json").write_text(json.dumps(vercel, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    (destino / "robots.txt").write_text("User-agent: *\nAllow: /\n", encoding="utf-8")
+    base = WEB_URL if sitio == "web" else CAT_URL
+    urls = ["/" if n == "index" else "/" + n for n in paginas]
+    (destino / "sitemap.xml").write_text('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+        + "".join(f"  <url><loc>{base}{u}</loc><changefreq>monthly</changefreq><priority>{'1.0' if u == '/' else '0.7'}</priority></url>\n" for u in urls)
+        + "</urlset>\n", encoding="utf-8")
+    (destino / "robots.txt").write_text(f"User-agent: *\nAllow: /\nSitemap: {base}/sitemap.xml\n", encoding="utf-8")
     print("ok", destino.relative_to(REPO), len(paginas), "páginas")
 
 

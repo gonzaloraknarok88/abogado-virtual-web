@@ -1,2 +1,3 @@
 User-agent: *
 Allow: /
+Sitemap: https://abovirtual-mexico-catalogo.vercel.app/sitemap.xml
