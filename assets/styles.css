@@ -405,3 +405,24 @@ body.bot-open .wa { display: none; }
 @media (max-width: 560px) { .stories { grid-template-columns: 1fr; } .story { aspect-ratio: 4 / 5; } .campaign { gap: 10px; } }
 .chip--gold { border-color: var(--gold); color: var(--gold); background: transparent; }
 .chip--gold:hover { background: var(--gold); color: var(--ink); }
+
+/* ---------- Multi-país (México) ---------- */
+/* Precios en Cinzel dorado (regla de marca) */
+.price-cinzel, .card__price strong { font-family: "Cinzel", var(--serif); letter-spacing: .02em; }
+.offer--navy .price-cinzel, .offer--black .price-cinzel, .card--dark .card__price strong {
+  background: linear-gradient(180deg, #f3e2b0 0%, var(--gold) 48%, var(--gold-deep) 100%);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+  text-shadow: 0 1px 0 rgba(0,0,0,.08);
+}
+.pain { color: var(--burgundy); }
+.office--single { grid-template-columns: 1fr; max-width: 820px; }
+/* Selector de país */
+.countries { list-style: none; margin: 40px 0 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 18px; }
+.country { display: flex; flex-direction: column; gap: 6px; padding: 28px 24px; border: 1px solid rgba(201,164,92,.45); color: #fff; text-decoration: none; transition: border-color .25s, transform .25s; }
+a.country:hover, a.country:focus-visible { border-color: var(--gold); transform: translateY(-3px); }
+.country b { font: 500 1.8rem/1.1 var(--serif); }
+.country span { font-size: .78rem; letter-spacing: .18em; text-transform: uppercase; color: var(--gold-soft); }
+.country--soon { opacity: .55; }
+.legal { max-width: 820px; }
+.legal h2 { font-size: 1.8rem; margin: 2em 0 .6em; }
+.legal li { margin-bottom: .4em; }
