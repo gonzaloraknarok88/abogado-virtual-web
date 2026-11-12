@@ -1,84 +1,87 @@
 /* AboVirtual México · CATÁLOGO "La Colección".
-   Sitio aparte de la web: negro, plata y oro del logo negro, con filetes verdes de México.
+   Sitio aparte de la web: maison en burdeo profundo con oro, marfil y filetes verdes de México.
+   La web es blanca; el catálogo es burdeo. El azul no se usa.
    Se carga después de mx.css. */
 :root {
-  --cat-bg: #050506;
-  --cat-panel: #0f1012;
-  --cat-panel-2: #16171a;
-  --cat-line: rgba(195,198,204,.16);
-  --cat-line-2: rgba(195,198,204,.30);
-  --cat-text: #e9e7e2;
-  --cat-soft: #a9abb1;
+  --cat-soft2: #f0dc94;
+  --cat-bg: #2a0410;
+  --cat-panel: #3a0817;
+  --cat-panel-2: #470c1d;
+  --cat-top: #1c020a;
+  --cat-line: rgba(212,175,55,.18);
+  --cat-line-2: rgba(212,175,55,.38);
+  --cat-text: #f6efe4;
+  --cat-soft: #d8c6b8;
 }
 body { background: var(--cat-bg); color: var(--cat-text); }
-::selection { background: var(--gold); color: #000; }
-.pain { color: #e58aa0; }
+::selection { background: var(--gold); color: var(--burgundy-deep); }
+.pain { color: #ffb3c1; }
 
 /* Filetes */
 .flag { height: 2px; background: var(--tricolor); }
-.flag--thin { height: 1px; width: 140px; background: linear-gradient(90deg, var(--green), var(--silver) 50%, var(--gold)); }
-.eyebrow { color: var(--silver); letter-spacing: .4em; }
+.flag--thin { height: 1px; width: 140px; background: linear-gradient(90deg, var(--green), var(--cat-soft2) 50%, var(--gold)); }
+.eyebrow { color: var(--cat-soft2); letter-spacing: .4em; }
 .eyebrow::before { background: var(--green-soft); }
 .head h2, .section h2 { color: #fff; font-weight: 500; }
 .head p { color: var(--cat-soft); }
 
 /* Barra y encabezado propios del catálogo */
-.cbar { background: #000; border-bottom: 1px solid var(--cat-line); font: 500 .62rem/1 var(--sans); letter-spacing: .3em; text-transform: uppercase; color: var(--cat-soft); }
+.cbar { background: var(--cat-top); border-bottom: 1px solid var(--cat-line); font: 500 .62rem/1 var(--sans); letter-spacing: .3em; text-transform: uppercase; color: var(--cat-soft); }
 .cbar__in { display: flex; justify-content: space-between; gap: 16px; padding: 11px 0; }
 .cbar b { color: var(--gold); font-weight: 600; }
-.cbar a { text-decoration: none; color: var(--silver); }
+.cbar a { text-decoration: none; color: var(--cat-soft2); }
 .cbar a:hover { color: var(--gold-hi); }
-.cheader { position: sticky; top: 0; z-index: 20; background: #010101; box-shadow: 0 1px 0 var(--cat-line), 0 2px 0 rgba(0,104,71,.9); }
+.cheader { position: sticky; top: 0; z-index: 20; background: var(--cat-top); box-shadow: 0 1px 0 var(--cat-line-2), 0 3px 0 var(--green); }
 .cheader__in { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 20px; min-height: 92px; }
 .cheader__brand { justify-self: center; display: flex; align-items: center; gap: 16px; text-decoration: none; }
 .cheader__brand img { height: 70px; width: auto; }
 .cheader__brand span { display: flex; flex-direction: column; border-left: 1px solid var(--cat-line-2); padding-left: 16px; }
 .cheader__brand b { font: 500 1.5rem/1 var(--serif); font-style: italic; color: #fff; }
-.cheader__brand small { margin-top: 7px; font: 600 .52rem/1 var(--sans); letter-spacing: .4em; text-transform: uppercase; color: var(--silver); }
+.cheader__brand small { margin-top: 7px; font: 600 .52rem/1 var(--sans); letter-spacing: .4em; text-transform: uppercase; color: var(--cat-soft2); }
 .cnav { display: flex; gap: 26px; }
 .cnav--end { justify-content: flex-end; align-items: center; }
 .cnav a { font: 600 .62rem/1 var(--sans); letter-spacing: .26em; text-transform: uppercase; text-decoration: none; color: var(--cat-soft); padding: 8px 0; border-bottom: 1px solid transparent; }
 .cnav a:hover { color: var(--gold-hi); border-bottom-color: var(--green); }
 .cnav .cbtn { border: 1px solid var(--gold); color: var(--gold-hi); padding: 12px 16px; }
-.cnav .cbtn:hover { background: var(--gold); color: #000; }
+.cnav .cbtn:hover { background: var(--gold); color: var(--burgundy-deep); }
 
 /* Portada del catálogo */
-.maison { background: radial-gradient(60% 80% at 50% 0%, rgba(201,164,92,.16), transparent 62%), radial-gradient(40% 60% at 0% 100%, rgba(0,104,71,.20), transparent 70%), var(--cat-bg); border-bottom: 1px solid var(--cat-line); padding: 96px 0 88px; }
+.maison { background: radial-gradient(60% 80% at 50% 0%, rgba(212,175,55,.20), transparent 62%), radial-gradient(45% 65% at 0% 100%, rgba(0,104,71,.35), transparent 70%), radial-gradient(45% 65% at 100% 100%, rgba(0,104,71,.22), transparent 70%), var(--cat-bg); border-bottom: 1px solid var(--cat-line); padding: 96px 0 88px; }
 .maison__seal { width: auto; height: 170px; margin: 0 auto 34px; }
 .maison h1 { color: #fff; font-weight: 500; font-style: italic; }
-.maison h1 em { color: var(--silver); font-family: var(--sans); font-size: .78rem; letter-spacing: .55em; font-style: normal; }
+.maison h1 em { color: var(--cat-soft2); font-family: var(--sans); font-size: .78rem; letter-spacing: .55em; font-style: normal; }
 .maison p { color: var(--cat-soft); }
-.maison .btn--ink { background: var(--gold); color: #000; border-color: var(--gold); }
+.maison .btn--ink { background: var(--gold); color: var(--burgundy-deep); border-color: var(--gold); }
 .maison .btn--ink:hover { background: var(--gold-hi); }
-.maison .btn--line, .btn--line { color: var(--silver); border-color: var(--cat-line-2); }
-.btn--line:hover { background: #fff; color: #000; border-color: #fff; }
-.btn--gold { background: var(--gold); color: #000; border-color: var(--gold); }
+.maison .btn--line, .btn--line { color: var(--cat-soft2); border-color: var(--cat-line-2); }
+.btn--line:hover { background: #fff; color: var(--burgundy-deep); border-color: #fff; }
+.btn--gold { background: var(--gold); color: var(--burgundy-deep); border-color: var(--gold); }
 .btn--gold:hover { background: var(--gold-hi); }
-.btn--ink { background: #fff; color: #000; border-color: #fff; }
+.btn--ink { background: var(--green); color: #fff; border-color: var(--green); }
 .btn--ink:hover { background: var(--gold-hi); border-color: var(--gold-hi); }
 .btn--white { background: transparent; color: #fff; border-color: var(--cat-line-2); }
-.btn--white:hover { background: #fff; color: #000; }
+.btn--white:hover { background: #fff; color: var(--burgundy-deep); }
 
 /* Secciones */
 .section, .section--white { background: var(--cat-bg); }
 .section--onyx { background: var(--cat-panel); border-block: 1px solid var(--cat-line); }
 .section--bone { background: var(--cat-panel); border-top: 1px solid var(--cat-line); }
-.section--bone .eyebrow { color: var(--silver); }
+.section--bone .eyebrow { color: var(--cat-soft2); }
 
 /* Capítulos */
 .chapters { border-color: var(--cat-line); }
 .chapters li { border-color: var(--cat-line); }
 .chapters a { background: var(--cat-panel); }
-.chapters a:hover { background: var(--cat-panel-2); box-shadow: inset 0 2px 0 var(--green); }
+.chapters a:hover { background: var(--cat-panel-2); box-shadow: inset 0 3px 0 var(--green); }
 .chapters span { color: var(--gold); font-style: italic; }
 .chapters b { color: #fff; font: 600 1.35rem/1.2 var(--serif); letter-spacing: 0; text-transform: none; }
 .chapters small { color: var(--cat-soft); }
 
 /* Pestañas y tarjetas */
-.sticky-tabs { background: rgba(5,5,6,.94); border-bottom-color: var(--cat-line); top: 92px; }
+.sticky-tabs { background: rgba(42,4,16,.95); border-bottom-color: var(--cat-line); top: 92px; }
 .tab { background: transparent; border-color: var(--cat-line-2); color: var(--cat-soft); }
 .tab:hover { border-color: var(--green-soft); color: #fff; }
-.tab.is-on { background: #fff; border-color: #fff; color: #000; }
+.tab.is-on { background: var(--gold); border-color: var(--gold); color: var(--cat-top); }
 .cards { background: var(--cat-line); border-color: var(--cat-line); }
 .card, .card--dark { background: var(--cat-panel); color: var(--cat-text); }
 .card:hover, .card--dark:hover { background: var(--cat-panel-2); }
@@ -89,12 +92,12 @@ body { background: var(--cat-bg); color: var(--cat-text); }
 .card__area, .card__desc, .card__price small, .card__price span, .card--dark .card__desc, .card--dark .card__area { color: var(--cat-soft); }
 .card__price { border-top-color: var(--cat-line); }
 .card__price strong, .card--dark .card__price strong { font-family: var(--serif); font-weight: 700; background: var(--gold-metal); -webkit-background-clip: text; background-clip: text; color: transparent; }
-.card .tag { color: var(--silver); border-color: var(--cat-line-2); }
-.chip { color: var(--silver); border-color: var(--cat-line-2); }
+.card .tag { color: var(--cat-soft2); border-color: var(--cat-line-2); }
+.chip { color: var(--cat-soft2); border-color: var(--cat-line-2); }
 .chip:hover { color: #fff; border-color: var(--green-soft); }
-.chip--solid { background: var(--gold); border-color: var(--gold); color: #000; }
-.chip--solid:hover { background: var(--gold-hi); color: #000; }
-.chip[aria-pressed="true"] { background: var(--green); border-color: var(--green); color: #fff; }
+.chip--solid { background: var(--gold); border-color: var(--gold); color: var(--burgundy-deep); }
+.chip--solid:hover { background: var(--gold-hi); color: var(--burgundy-deep); }
+.chip[aria-pressed="true"] { background: var(--green); border-color: var(--green-soft); color: #fff; }
 .conds div { border-top-color: var(--green); }
 .conds b { color: var(--gold); }
 .conds p { color: var(--cat-soft); }
@@ -104,7 +107,7 @@ body { background: var(--cat-bg); color: var(--cat-text); }
 .quote__intro p { color: var(--cat-soft); }
 .quote__intro a { color: var(--gold-hi); }
 .quote__form { background: var(--cat-panel-2); border-color: var(--cat-line); border-top: 3px solid var(--green); box-shadow: none; color: var(--cat-text); }
-.quote__form legend { color: var(--silver); }
+.quote__form legend { color: var(--cat-soft2); }
 .checks__title { color: var(--gold); }
 .check { color: var(--cat-text); border-bottom-color: var(--cat-line); }
 .check:hover { background: rgba(255,255,255,.03); }
@@ -112,22 +115,22 @@ body { background: var(--cat-bg); color: var(--cat-text); }
 .check__price { color: var(--gold); font-family: var(--serif); font-weight: 700; }
 .fields label { color: var(--cat-soft); }
 .fields input, .fields select, .fields textarea { color: #fff; border-color: var(--cat-line-2); }
-.fields select option { color: #000; }
-.summary { background: #000; border: 1px solid var(--cat-line); }
+.fields select option { color: #1c1417; }
+.summary { background: var(--cat-top); border: 1px solid var(--cat-line); }
 
 /* Agenda y sede en negro */
 .agenda-wrap__intro h2 { color: #fff; }
 .agenda-wrap__intro p, .agenda-wrap__intro li { color: var(--cat-soft); }
 .agenda { background: var(--cat-panel-2); border-color: var(--cat-line); color: var(--cat-text); box-shadow: none; }
 .agenda__step { border-bottom-color: var(--cat-line); }
-.agenda__label { color: var(--silver); }
+.agenda__label { color: var(--cat-soft2); }
 .agenda__mode { background: var(--cat-panel); border-color: var(--cat-line-2); color: #fff; }
 .agenda__mode small, .agenda__hint, .agenda__sum, .agenda .fields label { color: var(--cat-soft); }
 .agenda__mode[aria-pressed="true"] { background: rgba(0,104,71,.18); }
 .agenda select, .agenda .fields input:not([type="checkbox"]) { background: var(--cat-panel); color: #fff; border-color: var(--cat-line-2); }
 .agenda__day { background: var(--cat-panel); border-color: var(--cat-line-2); color: #fff; }
-.agenda__day[aria-pressed="true"] { background: var(--gold); border-color: var(--gold); color: #000; }
-.agenda__day[aria-pressed="true"] small { color: #000; }
+.agenda__day[aria-pressed="true"] { background: var(--gold); border-color: var(--gold); color: var(--burgundy-deep); }
+.agenda__day[aria-pressed="true"] small { color: var(--burgundy-deep); }
 .agenda__slot { background: transparent; border-color: var(--green-soft); color: #9fd8c0; }
 .agenda__sum b, .agenda__ok-title { color: #fff; }
 .agenda__ok { background: rgba(0,104,71,.16); }
@@ -135,12 +138,12 @@ body { background: var(--cat-bg); color: var(--cat-text); }
 .sede__info h3 { color: #fff; }
 .sede__info address, .sede__info ul { color: var(--cat-soft); }
 .sede__info address b { color: #fff; }
-.sede__map iframe { filter: grayscale(.85) contrast(1.05); }
+.sede__map iframe { filter: sepia(.15); }
 
 /* Banda y pie */
-.band { background: #000; border-top: 1px solid var(--cat-line); }
+.band { background: var(--cat-top); border-top: 1px solid var(--cat-line); }
 .band::before { height: 1px; }
-.footer { background: #000; border-top: 2px solid var(--green); color: var(--cat-soft); }
+.footer { background: var(--cat-top); border-top: 2px solid var(--green); color: var(--cat-soft); }
 .footer h4 { color: var(--gold); }
 .footer address { font-style: normal; line-height: 1.7; }
 .footer address b { color: #fff; }
@@ -148,11 +151,11 @@ body { background: var(--cat-bg); color: var(--cat-text); }
 .footer .cheader__brand img { height: 90px; }
 
 /* Concierge en negro y oro */
-.bot__head { background: #000; border-bottom: 1px solid var(--cat-line); }
+.bot__head { background: var(--cat-top); border-bottom: 1px solid var(--cat-line); }
 .bot__name { font-family: var(--serif); text-transform: none; letter-spacing: .02em; font-size: 1.1rem; }
 .bot__avatar { border-radius: 4px; object-fit: cover; }
-.bot__btn { background: #000; border-color: var(--gold); }
-.wa__title { font-family: var(--serif); text-transform: none; letter-spacing: 0; color: #000; font-size: 1.2rem; }
+.bot__btn { background: var(--cat-top); border-color: var(--gold); }
+.wa__title { font-family: var(--serif); text-transform: none; letter-spacing: 0; color: var(--burgundy-deep); font-size: 1.2rem; }
 
 @media (max-width: 960px) {
   .cheader__in { grid-template-columns: auto 1fr; min-height: 76px; }
@@ -170,4 +173,12 @@ body { background: var(--cat-bg); color: var(--cat-text); }
 
 /* Ajustes finos de la portada */
 .maison__seal, .cheader__brand img, .footer .cheader__brand img, .bot__avatar { mix-blend-mode: lighten; }
-.maison .eyebrow { font: 600 .66rem/1.6 var(--sans); letter-spacing: .4em; color: var(--silver); max-width: none; margin: 0 0 18px; }
+.maison .eyebrow { font: 600 .66rem/1.6 var(--sans); letter-spacing: .4em; color: var(--cat-soft2); max-width: none; margin: 0 0 18px; }
+
+/* Verde de México en el catálogo */
+.card::before { background: var(--green-soft); }
+.agenda__label span { background: var(--green); }
+.agenda__slot { color: #bfe8d6; }
+.check input { accent-color: var(--gold); }
+.wa__title { color: var(--burgundy); }
+.fields input, .fields select, .fields textarea { background: rgba(0,0,0,.12); }

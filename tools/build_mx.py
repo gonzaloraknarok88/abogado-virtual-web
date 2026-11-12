@@ -91,7 +91,7 @@ def head(slug: str, titulo: str, desc: str, extra_ld: dict | None = None) -> str
     lds = [ld] + ([extra_ld] if extra_ld else [])
     ld_html = "\n".join(f'<script type="application/ld+json">{json.dumps(x, ensure_ascii=False)}</script>' for x in lds)
     hoja = "catalogo.css" if SITIO == "catalogo" else "web.css"
-    color = "#010101" if SITIO == "catalogo" else "#13243e"
+    color = "#2a0410" if SITIO == "catalogo" else "#800020"
     og = base + ("/logo-negro.webp" if SITIO == "catalogo" else "/logo-azul.webp")
     return f"""<!doctype html>
 <html lang="es-MX">

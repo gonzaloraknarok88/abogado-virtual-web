@@ -1,31 +1,33 @@
 /* AboVirtual México · base común de la web y el catálogo.
-   Sigue la línea de AboVirtual Chile (azul marino, marfil y dorado, Cormorant + Montserrat)
-   con líneas finas en verde bandera de México. Precios en dorado, dolores en vino. */
+   Paleta de la marca MX: blanco, dorado, burdeo y verde (el azul queda solo en el logo).
+   Estructura y tipografía de la línea Chile (Cormorant + Montserrat). Precios en dorado, dolores en burdeo. */
 :root {
   /* Superficies (línea AboVirtual Chile: marfil, azul marino y dorado) */
   --white: #ffffff;
-  --ivory: #f7f5f0;
-  --pearl: #efeae0;
-  --ink: #0e1626;
-  --ink-soft: #4a5263;
-  --mute: #6b7280;
-  --hair: rgba(19,36,62,.10);
-  --hair-2: rgba(19,36,62,.20);
+  --ivory: #fbf8f3;
+  --pearl: #f3eee5;
+  --ink: #1c1417;
+  --ink-soft: #594d51;
+  --mute: #6f6468;
+  --hair: rgba(28,20,23,.10);
+  --hair-2: rgba(28,20,23,.20);
   /* Marca: azul marino del logo (se mantienen los nombres de variable) */
-  --burgundy: #13243e;
-  --burgundy-hi: #1c3358;
-  --burgundy-deep: #0b1628;
-  --navy: #13243e;
-  --wine: #7d1f35;              /* solo para dolores y alertas */
-  --gold: #c9a45c;
-  --gold-hi: #e6d3a3;
-  --gold-ink: #8a6a2a;          /* dorado legible sobre blanco */
+  --burgundy: #800020;
+  --burgundy-hi: #a3112f;
+  --burgundy-deep: #4a0013;
+  --navy: #800020;             /* color de marca MX (burdeo); el azul queda solo en el logo */
+  --logo-navy: #13243e;
+  --wine: #800020;              /* dolores en burdeo */
+  --gold: #d4af37;
+  --gold-hi: #f0dc94;
+  --gold-ink: #8a6a12;          /* dorado legible sobre blanco */
   --silver: #c3c6cc;
   /* Acentos de México: verde bandera en líneas finas, rojo mínimo */
-  --lapis: #1c3358;
-  --lapis-deep: #0b1628;
+  --lapis: #006847;
+  --lapis-deep: #4a0013;
   --green: #006847;
-  --green-soft: #2f8f6b;
+  --green-soft: #3fa37f;
+  --green-pale: #e8f3ee;
   --red: #ce1126;
   --wa: #25d366;
   --display: "Cormorant Garamond", "Times New Roman", serif;
@@ -33,7 +35,7 @@
   --sans: "Montserrat", system-ui, -apple-system, "Segoe UI", sans-serif;
   --tricolor: linear-gradient(90deg, var(--green) 0 44%, var(--gold-hi) 44% 56%, var(--red) 56% 100%);
   --green-line: linear-gradient(90deg, var(--green), var(--green-soft) 60%, rgba(0,104,71,0));
-  --gold-metal: linear-gradient(180deg, #e6d3a3 0%, #c9a45c 52%, #8a6a2a 100%);
+  --gold-metal: linear-gradient(180deg, #ecd47e 0%, #c9a227 50%, #8a6a12 100%);
   --on-dark: rgba(255,255,255,.80);
 }
 

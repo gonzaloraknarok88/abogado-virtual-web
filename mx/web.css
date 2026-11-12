@@ -1,5 +1,6 @@
 /* AboVirtual México · WEB (sitio de la firma).
-   Encabezado azul marino del logo, portada azul con oro y filetes verdes de México.
+   Blanco dominante, burdeo y dorado como marca, filetes y matices verdes de México.
+   El azul aparece solo dentro del logo oficial.
    Se carga después de mx.css. */
 
 /* Filetes verdes: la firma de México en toda la web */
@@ -11,63 +12,59 @@
 .head h2 { font-weight: 600; }
 .head h2 em, .phero h1 em, .hero h1 span { font-style: italic; }
 
-/* Barra superior y encabezado con el logo oficial */
-.topbar { background: var(--burgundy-deep); border-bottom: 1px solid rgba(201,164,92,.25); }
+/* Barra superior y encabezado blanco; el logo oficial va en su placa azul */
+.topbar { background: var(--burgundy-deep); border-bottom: 2px solid var(--green); }
 .topbar b { color: var(--gold); }
-.header { background: var(--navy); border-bottom: 0; box-shadow: 0 1px 0 rgba(201,164,92,.35), 0 3px 0 var(--green); backdrop-filter: none; }
+.header { background: rgba(255,255,255,.97); border-bottom: 1px solid var(--hair); box-shadow: 0 2px 0 var(--green-pale); backdrop-filter: blur(8px); }
 .header__in { min-height: 96px; }
 .logo { gap: 16px; }
-.logo__img { height: 82px; width: auto; display: block; }
-.logo__word { border-left: 1px solid rgba(201,164,92,.4); padding-left: 16px; }
-.logo__name { font: 600 1.3rem/1 var(--serif); letter-spacing: .04em; color: var(--white); }
-.logo__tag { color: var(--gold); letter-spacing: .32em; }
-.menu a { color: rgba(255,255,255,.82); }
-.menu a:hover, .menu a[aria-current="page"] { color: var(--gold-hi); border-bottom-color: var(--green-soft); }
-.menu__cta { background: transparent; border-color: var(--gold); color: var(--gold-hi); }
-.menu__cta:hover { background: var(--gold); color: var(--navy); }
+.logo__img { height: 78px; width: auto; display: block; background: var(--logo-navy); padding: 4px 6px; border-radius: 4px; box-shadow: 0 0 0 1px var(--gold), 0 8px 18px -10px rgba(74,0,19,.5); }
+.logo__word { border-left: 1px solid var(--gold); padding-left: 16px; }
+.logo__name { font: 600 1.35rem/1 var(--serif); letter-spacing: .02em; color: var(--burgundy); }
+.logo__tag { color: var(--green); letter-spacing: .32em; }
+.menu a { color: var(--ink-soft); }
+.menu a:hover, .menu a[aria-current="page"] { color: var(--burgundy); border-bottom-color: var(--green); }
+.menu__cta { background: var(--burgundy); border-color: var(--burgundy); color: var(--white); }
+.menu__cta:hover { background: var(--green); border-color: var(--green); }
 .menu__drop { border-top: 2px solid var(--green); }
-.mnav summary { color: var(--gold-hi); border-color: rgba(201,164,92,.5); }
 
-/* Portada azul marino, estilo Chile, con video enmarcado en oro */
-.hero { background: radial-gradient(70% 90% at 15% 0%, #1c3358 0%, var(--navy) 55%, var(--burgundy-deep) 100%); color: var(--white); border-bottom: 0; }
+/* Portada blanca: título burdeo, oro y video enmarcado con filete verde */
+.hero { background: radial-gradient(60% 80% at 0% 0%, var(--green-pale), transparent 60%), linear-gradient(180deg, var(--white) 0%, var(--ivory) 100%); color: var(--ink); border-bottom: 0; }
 .hero::before { display: none; }
 .hero::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; top: auto; width: auto; height: 3px; background: var(--tricolor); }
-.hero__bg { top: 64px; right: 4%; bottom: 64px; height: auto; width: 34%; outline: 1px solid rgba(201,164,92,.7); outline-offset: 14px; box-shadow: 30px 30px 0 -12px rgba(0,104,71,.35); }
+.hero__bg { top: 64px; right: 4%; bottom: 64px; height: auto; width: 34%; outline: 1px solid var(--gold); outline-offset: 14px; box-shadow: 30px 30px 0 -12px rgba(0,104,71,.28); }
 .hero__in { padding: 112px 0 84px; }
 .hero__in > :not(.stats) { max-width: 56%; }
-.hero h1 { color: var(--white); font-size: clamp(2.6rem, 5.6vw, 4.8rem); font-weight: 600; letter-spacing: 0; }
-.hero h1 span { color: var(--gold); background: none; -webkit-text-fill-color: var(--gold); }
-.hero__lead { color: rgba(255,255,255,.82); }
-.hero .eyebrow { color: var(--gold-hi); }
-.hero .eyebrow::before { background: var(--green-soft); }
-.hero .btn--line { color: var(--white); border-color: rgba(255,255,255,.5); }
-.hero .btn--line:hover { background: var(--white); color: var(--navy); }
-.stats { border-top-color: rgba(255,255,255,.2); max-width: 56%; }
-.stats li + li { border-left-color: rgba(255,255,255,.14); }
-.stats b { color: var(--gold); font-family: var(--serif); font-weight: 600; }
-.stats span { color: rgba(255,255,255,.6); }
+.hero h1 { color: var(--burgundy); font-size: clamp(2.6rem, 5.6vw, 4.8rem); font-weight: 600; letter-spacing: 0; }
+.hero h1 span { color: var(--gold-ink); background: var(--gold-metal); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+.hero__lead { color: var(--ink-soft); }
+.hero .eyebrow { color: var(--green); }
+.hero .eyebrow::before { background: var(--gold); }
+.hero .btn--line { color: var(--burgundy); border-color: var(--burgundy); }
+.hero .btn--line:hover { background: var(--burgundy); color: var(--white); }
+.stats { border-top-color: var(--hair-2); max-width: 56%; }
+.stats li + li { border-left-color: var(--hair); }
+.stats b { color: var(--burgundy); font-family: var(--serif); font-weight: 600; }
+.stats span { color: var(--mute); }
 
 /* Botones */
-.btn--gold { background: var(--gold); color: var(--navy); border-color: var(--gold); }
+.btn--gold { background: var(--gold-metal); color: var(--burgundy-deep); border-color: #b8921f; }
 .btn--gold:hover { background: var(--gold-hi); }
-.btn--line { color: var(--navy); border-color: var(--navy); }
-.btn--line:hover { background: var(--navy); color: var(--white); }
-.btn--ink { background: var(--navy); color: var(--white); border-color: var(--navy); }
+.btn--line { color: var(--burgundy); border-color: var(--burgundy); }
+.btn--line:hover { background: var(--burgundy); color: var(--white); }
+.btn--ink { background: var(--burgundy); color: var(--white); border-color: var(--burgundy); }
 .btn--ink:hover { background: var(--green); border-color: var(--green); }
-.btn--white { color: var(--navy); border-color: var(--white); }
+.btn--white { background: var(--white); color: var(--burgundy); border-color: var(--white); }
 
-/* Encabezados de página interior */
-.phero { background: radial-gradient(70% 100% at 10% 0%, #1c3358 0%, var(--navy) 60%, var(--burgundy-deep) 100%); color: var(--white); border-bottom: 3px solid var(--green); }
-.phero h1 { color: var(--white); font-weight: 600; }
-.phero h1 em { color: var(--gold); background: none; -webkit-text-fill-color: var(--gold); font-weight: 500; }
-.phero__lead { color: rgba(255,255,255,.82); }
-.phero .eyebrow { color: var(--gold-hi); }
-.phero .crumbs, .phero .crumbs a { color: rgba(255,255,255,.6); }
-.phero .btn--line { color: var(--white); border-color: rgba(255,255,255,.5); }
-.phero .btn--line:hover { background: var(--white); color: var(--navy); }
-.phero .pain { color: #f0a7b6; }
-.phero__media { box-shadow: 26px 26px 0 -10px rgba(0,104,71,.45); }
-.phero__media::after { border-color: rgba(201,164,92,.85); }
+/* Encabezados de página interior: marfil con verde suave */
+.phero { background: radial-gradient(60% 90% at 0% 0%, var(--green-pale), transparent 60%), var(--ivory); color: var(--ink); border-bottom: 3px solid var(--green); }
+.phero h1 { color: var(--burgundy); font-weight: 600; }
+.phero h1 em { color: var(--gold-ink); background: var(--gold-metal); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; font-weight: 500; }
+.phero__lead { color: var(--ink-soft); }
+.phero .eyebrow { color: var(--green); }
+.phero .crumbs, .phero .crumbs a { color: var(--mute); }
+.phero__media { box-shadow: 26px 26px 0 -10px rgba(0,104,71,.30); }
+.phero__media::after { border-color: rgba(212,175,55,.9); }
 
 /* Secciones: marfil, azul marino y filetes verdes */
 .section--onyx { background: var(--ivory); border-block: 0; position: relative; }
@@ -125,7 +122,7 @@
 /* Pie */
 .footer { background: var(--burgundy-deep); border-top: 3px solid var(--green); }
 .footer h4 { color: var(--gold); }
-.footer .logo__img { height: 96px; }
+.footer .logo__img { height: 96px; box-shadow: 0 0 0 1px var(--gold); }
 .footer .logo__word { border-left-color: rgba(201,164,92,.35); }
 .footer address { font-style: normal; line-height: 1.7; color: rgba(255,255,255,.78); }
 .footer address b { color: var(--white); font-weight: 600; }
@@ -149,3 +146,10 @@
   .stats { grid-template-columns: repeat(2, 1fr); }
   .stats li + li { border-left: 0; padding-left: 0; }
 }
+
+/* Matices verdes de México */
+.firm-note { background: linear-gradient(120deg, #004d35, var(--green)); border-left-color: var(--gold); }
+.areas li:nth-child(6) .area--text { background: linear-gradient(140deg, #004d35, var(--green)); border-color: var(--green); }
+.band { background: linear-gradient(120deg, var(--burgundy-deep), var(--burgundy) 70%); }
+.footer { background: var(--burgundy-deep); }
+.sede__info h3, .agenda__ok-title { color: var(--burgundy); }
