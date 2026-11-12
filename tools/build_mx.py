@@ -51,6 +51,12 @@ ESTADOS = [
     "Yucatán", "Zacatecas",
 ]
 
+# Equipo con foto. Agregue aquí a cada integrante (foto en mx/, 560×700). Nombre y cargo solo
+# cuando Gonzalo los confirme; las cédulas se agregan después.
+EQUIPO = [
+    {"foto": "equipo-1.webp", "nombre": "Equipo AboVirtual", "cargo": "Abogados siempre conectados"},
+]
+
 AREAS = [
     ("familia", "Familia y patrimonio", "Divorcios, pensión, custodia y capitulaciones"),
     ("empresas", "Empresas y corporativos", "Laboral, NOM-035, sociedades, contratos e iguala"),
@@ -122,6 +128,7 @@ def head(slug: str, titulo: str, desc: str, extra_ld: dict | None = None) -> str
 <script src="/mx/site.js" defer></script>
 <script src="/mx/agenda.js" defer></script>
 <script src="/mx/analytics.js" defer></script>
+<script src="/mx/motion.js" defer></script>
 </head>
 """
 
@@ -289,6 +296,17 @@ def agenda(titulo: str = "Agende su reunión privada", clase: str = "section", h
 """
 
 
+def equipo_fotos(clase: str = "section", titulo: str = "Las personas detrás de su caso") -> str:
+    fichas = "".join(
+        f'<li class="persona"><div class="persona__foto"><img src="/mx/{p["foto"]}" alt="{esc(p["nombre"])}" width="560" height="700" loading="lazy"></div>'
+        f'<h3>{p["nombre"]}</h3><p>{p["cargo"]}</p></li>' for p in EQUIPO)
+    return f"""<section class="{clase}" id="equipo"><div class="wrap">
+  {head_block("Nuestro equipo", titulo, "Abogados que le atienden por videollamada en todo México y en nuestra oficina de Plaza Carso.")}
+  <ul class="personas">{fichas}</ul>
+</div></section>
+"""
+
+
 def cobertura() -> str:
     return f"""<section class="section" id="cobertura"><div class="wrap">
   {head_block("Cobertura nacional", "Atendemos en todo México", "Los 32 estados, por videollamada y con trámites coordinados en cada entidad. Nuestro foco: empresarios, directivos, médicos especialistas, inversionistas y familias de patrimonio.")}
@@ -357,10 +375,118 @@ CIUDADES = [
 ]
 
 
-def ciudades() -> str:
-    return ('<ul class="cities">' + "".join(f"<li><b>{c}</b><span>{z}</span></li>" for c, z in CIUDADES) + "</ul>"
-            + '<p class="estados__title">Atención en los 32 estados</p><ul class="estados" aria-label="Los 32 estados de México">'
+def ciudades(estados: bool = True) -> str:
+    lista = '<ul class="cities">' + "".join(f"<li><b>{c}</b><span>{z}</span></li>" for c, z in CIUDADES) + "</ul>"
+    if not estados:
+        return lista
+    return (lista + '<p class="estados__title">Atención en los 32 estados</p><ul class="estados" aria-label="Los 32 estados de México">'
             + "".join(f"<li>{e}</li>" for e in ESTADOS) + "</ul>")
+
+
+# Mapa interactivo: trazos de @svg-maps/mexico (CC BY 4.0) en tools/mx_mapa.json.
+MAPA_SVG = json.loads((REPO / "tools" / "mx_mapa.json").read_text(encoding="utf-8"))
+# Zonas de foco del target (solo atención por videollamada; la oficina presencial es la de CDMX).
+PRIORIDAD = {
+    "cmx": "Polanco · Lomas · Santa Fe · Pedregal", "nle": "San Pedro Garza García · Monterrey",
+    "jal": "Guadalajara · Zapopan", "roo": "Cancún · Playa del Carmen · Tulum",
+    "gro": "Acapulco Diamante", "que": "Juriquilla · Centro Sur",
+}
+
+
+def mapa(clase: str = "section") -> str:
+    trazos = "".join(
+        f'<path d="{e["d"]}" pathLength="1" class="mapa__edo{" is-sede" if e["id"] == "cmx" else " is-prio" if e["id"] in PRIORIDAD else ""}" '
+        f'data-id="{e["id"]}" data-nombre="{esc(e["nombre"])}"{f' data-zona="{esc(PRIORIDAD[e["id"]])}"' if e["id"] in PRIORIDAD else ""} '
+        f'tabindex="0" role="button" aria-label="{esc(e["nombre"])}"></path>'
+        for e in MAPA_SVG["estados"])
+    orden = sorted(MAPA_SVG["estados"], key=lambda e: e["nombre"])
+    chips = "".join(
+        f'<li><button type="button" class="mapa__chip{" is-sede" if e["id"] == "cmx" else " is-prio" if e["id"] in PRIORIDAD else ""}" data-chip="{e["id"]}">{e["nombre"]}</button></li>'
+        for e in orden)
+    return f"""<section class="{clase} mapa-sec" id="cobertura"><div class="wrap">
+  {head_block("Cobertura nacional", 'Los 32 estados, <em>una sola firma</em>', "Toque cualquier estado. Atendemos en todo México por videollamada y con cita en nuestra oficina de Plaza Carso; nuestro foco son empresarios, directivos, médicos especialistas, inversionistas y familias de patrimonio.")}
+  <div class="mapa" data-mapa>
+    <div class="mapa__stage">
+      <div class="mapa__grid" aria-hidden="true"></div>
+      <div class="mapa__sweep" aria-hidden="true"></div>
+      <svg class="mapa__svg" viewBox="{MAPA_SVG["viewBox"]}" role="group" aria-label="Mapa interactivo de los 32 estados de México">
+        <defs>
+          <linearGradient id="mapaOro" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f0dc94"/><stop offset=".5" stop-color="#d4af37"/><stop offset="1" stop-color="#8a6a12"/></linearGradient>
+          <radialGradient id="mapaHalo"><stop offset="0" stop-color="#d4af37" stop-opacity=".55"/><stop offset="1" stop-color="#d4af37" stop-opacity="0"/></radialGradient>
+        </defs>
+        <g class="mapa__estados">{trazos}</g>
+        <g class="mapa__rutas" aria-hidden="true"></g>
+        <g class="mapa__pins" aria-hidden="true"></g>
+      </svg>
+      <div class="mapa__tip" aria-hidden="true"></div>
+      <div class="mapa__hud" aria-hidden="true">
+        <p><b data-mapa-count>32</b><span>estados con atención</span></p>
+        <ul class="mapa__leyenda"><li class="is-sede">Oficina CDMX</li><li class="is-prio">Zona de foco</li><li>Videollamada</li></ul>
+      </div>
+    </div>
+    <aside class="mapa__panel" aria-live="polite">
+      <p class="mapa__tag" data-mapa-tag>Sede · Oficina presencial</p>
+      <h3 data-mapa-nombre>Ciudad de México</h3>
+      <p class="mapa__zona" data-mapa-zona>Polanco · Lomas · Santa Fe · Pedregal</p>
+      <p data-mapa-texto>Nuestra oficina está en Plaza Carso, Torre Frisko, piso 7. Reuniones presenciales con cita previa y videollamada de lunes a sábado.</p>
+      <ul class="mapa__datos">
+        <li><b>Modalidad</b><span data-mapa-modo>Presencial y videollamada</span></li>
+        <li><b>Horario</b><span>Lun a vie 10:00 a 20:00 · Sáb 10:00 a 14:00 (hora del centro)</span></li>
+        <li><b>Desde</b><span><span data-price="divorcio-voluntario">{PRECIO["divorcio-voluntario"]}</span> con IVA</span></li>
+      </ul>
+      <div class="actions">
+        <a class="btn btn--gold" href="/mx/agendar" data-mapa-agendar>Agendar cita</a>
+        <a class="btn btn--line" href="{WA}" target="_blank" rel="noopener noreferrer" data-mapa-wa data-track="mapa_wa">WhatsApp</a>
+      </div>
+    </aside>
+  </div>
+  <div class="mapa__filtros" role="group" aria-label="Resaltar en el mapa">
+    <button type="button" class="is-on" data-mapa-filtro="todos" aria-pressed="true">Los 32 estados</button>
+    <button type="button" data-mapa-filtro="prio" aria-pressed="false">Zonas de foco</button>
+    <button type="button" data-mapa-filtro="sede" aria-pressed="false">Oficina CDMX</button>
+  </div>
+  <ul class="mapa__chips" aria-label="Elija su estado">{chips}</ul>
+  <p class="mapa__credito">Cartografía: svg-maps de Victor Cazanave, licencia CC BY 4.0.</p>
+</div></section>
+"""
+
+
+# Carrusel de video (material de la web de Chile, autorizado por Gonzalo).
+CINE = [
+    ("hf2", "Familia", "Divorcio por mutuo acuerdo", "Ya lo decidieron. Firmen el convenio y sigan adelante, en línea y con discreción.", "divorcio-voluntario", "pago único", False),
+    ("hf1", "Familia", "Pensión, guarda y custodia", "Una estrategia que protege a sus hijos y su patrimonio, con negociación previa incluida.", "familia-integral", "en 3 cuotas", False),
+    ("hf4", "Empresas", "NOM-035 y defensa laboral", "Su área legal externa para que usted siga dirigiendo, no litigando.", "nom-035", "según tamaño", True),
+    ("hf3", "Patrimonio 360", "Compra, venta e inversión", "Revisión legal del inmueble, escrituración y fideicomisos antes de firmar.", "", "Cotización por escrito", False),
+]
+
+
+def cine(clase: str = "section") -> str:
+    slides = []
+    for i, (v, area, titulo, texto, sid, pago, desde) in enumerate(CINE):
+        precio = (f'<p class="cine__price">{"<small>desde</small>" if desde else ""}<b data-price="{sid}">{PRECIO[sid]}</b><span>{pago}</span></p>'
+                  if sid else f'<p class="cine__price"><b>A la medida</b><span>{pago}</span></p>')
+        cta = (f'<button type="button" class="btn btn--gold" data-bot="svc:{sid}">Quiero este servicio</button>' if sid
+               else '<a class="btn btn--gold" href="/mx/patrimonio">Conocer el área</a>')
+        slides.append(f"""<li class="cine__slide{" is-on" if i == 0 else ""}" data-cine-i="{i}">
+      <video muted playsinline preload="none" poster="/media/{v}.webp" data-src="/media/{v}.mp4" aria-hidden="true"></video>
+      <span class="cine__veil" aria-hidden="true"></span>
+      <span class="cine__label" aria-hidden="true"><i>0{i + 1}</i>{area}</span>
+      <div class="cine__txt"><p class="cine__area">{area}</p><h3>{titulo}</h3><p>{texto}</p>{precio}{cta}</div>
+      <span class="cine__bar" aria-hidden="true"><i></i></span>
+    </li>""")
+    return f"""<section class="{clase} cine-sec" id="en-movimiento"><div class="wrap">
+  {head_block("En movimiento", 'Lo que resolvemos, <em>con precio a la vista</em>', "Cuatro áreas, un mismo estándar. Elija la suya y vea cuánto cuesta antes de hablar con nosotros.")}
+  <div class="cine" data-cine aria-roledescription="carrusel" aria-label="Servicios destacados en video">
+    <ul class="cine__track">{"".join(slides)}</ul>
+    <div class="cine__ctrl">
+      <button type="button" class="cine__btn" data-cine-prev aria-label="Anterior">←</button>
+      <p class="cine__count"><b data-cine-n>01</b> / 0{len(CINE)}</p>
+      <button type="button" class="cine__btn" data-cine-pause aria-label="Pausar">❚❚</button>
+      <button type="button" class="cine__btn" data-cine-next aria-label="Siguiente">→</button>
+    </div>
+  </div>
+</div></section>
+"""
 
 
 # ============================ PÁGINAS ============================
@@ -434,6 +560,19 @@ def inicio() -> str:
   </div>
 </section>
 
+<section class="precios" aria-label="Honorarios principales"><div class="wrap precios__in">
+  <p class="precios__t">Honorarios con IVA incluido</p>
+  <ul>
+    <li><span>Divorcio de mutuo acuerdo</span><b data-price="divorcio-voluntario">$5,190 MXN</b><small>pago único</small></li>
+    <li><span>Divorcio unilateral</span><b data-price="divorcio-incausado">$10,390 MXN</b><small>2 cuotas de $5,195</small></li>
+    <li><span>Pensión, guarda y custodia</span><b data-price="familia-integral">$18,590 MXN</b><small>en 3 cuotas</small></li>
+    <li><span>Empresas y PYMES</span><b><small class="precios__desde">desde</small> <span data-price="nom-035">$5,190 MXN</span></b><small>NOM-035, contratos, iguala</small></li>
+  </ul>
+  <a class="btn btn--gold" href="/mx/catalogo">Ver los 24 precios</a>
+</div></section>
+
+{cine()}
+
 <section class="section"><div class="wrap">
   {head_block("Lo que está en juego", 'Lo que <span class="pain">no se puede perder</span>', "Cuando un asunto legal se complica, el costo real no son los honorarios: es el patrimonio, el tiempo y la reputación.")}
   <ul class="pains">{"".join(f"<li><b>{t}</b><p>{p}</p></li>" for t, p in pains)}</ul>
@@ -465,9 +604,11 @@ def inicio() -> str:
 <section class="section section--onyx"><div class="wrap center">
   {head_block("Para quién trabajamos", "Donde está el patrimonio de México", "", True)}
   <ul class="who"><li>Empresarios</li><li>Directores y ejecutivos</li><li>Médicos especialistas</li><li>Arquitectos</li><li>Inversionistas</li><li>Hoteleros</li><li>Industriales</li><li>Familias de patrimonio</li></ul>
-  {ciudades()}
+  {ciudades(False)}
 </div></section>
 
+{mapa()}
+{equipo_fotos("section section--onyx")}
 {agenda()}
 {sede()}
 {band("Compre tiempo. Compre tranquilidad.", "Una reunión privada basta para saber exactamente qué hacer y cuánto cuesta.", "Hola, quiero agendar una reunión privada con AboVirtual México.")}
@@ -646,6 +787,7 @@ def firma() -> str:
   <ul class="pillars">{"".join(f"<li><b>{n}</b><h3>{t}</h3><p>{p}</p></li>" for n, t, p in pilares)}</ul>
 </div></section>
 
+{equipo_fotos()}
 <section class="section section--onyx"><div class="wrap">
   {head_block("El equipo", "Un equipo para cada parte de su vida", "Su caso lo lleva un abogado asignado, con el respaldo de todo el holding.")}
   <ul class="team">{"".join(f'<li><div class="team__mono" aria-hidden="true">{m}</div><h3>{t}</h3><p class="team__role">{r}</p><p>{p}</p></li>' for m, t, r, p in equipo)}</ul>
@@ -770,6 +912,8 @@ def catalogo() -> str:
   <div class="actions actions--center"><a class="btn btn--ink" href="#coleccion">Explorar la colección</a><a class="btn btn--line" href="#cotizar">Armar mi cotización</a></div>
 </div></section>
 
+{cine()}
+
 <section class="section" style="padding-bottom:40px"><div class="wrap">
   {head_block("Capítulos", "Seis colecciones, un mismo estándar")}
   <ul class="chapters">{"".join(f'<li><a href="#coleccion" data-filter-go="{a}"><span>{n}</span><b>{t}</b><small>{d}</small></a></li>' for n, a, t, d in capitulos)}</ul>
@@ -809,6 +953,8 @@ def catalogo() -> str:
     <div class="quote__actions"><button type="submit" class="btn btn--ink" data-line="mx">Enviar por WhatsApp · +52 56 1213 3685</button></div>
   </form>
 </div></section>
+{mapa("section section--onyx")}
+{equipo_fotos("section", "Quién atiende su caso")}
 {agenda("Agende su cita desde el catálogo", "section section--onyx")}
 {sede()}
 {band("¿No encuentra su caso?", "Cada asunto es distinto. Cuéntenos el suyo y le proponemos un plan.", "Hola, tengo un caso que no aparece en el catálogo.")}
@@ -850,9 +996,9 @@ PAGINAS_WEB = {"index": inicio, "familia": familia, "empresas": empresas, "patri
                "firma": firma, "metodo": metodo, "contacto": contacto, "agendar": agendar, "aviso-de-privacidad": aviso}
 PAGINAS_CAT = {"index": catalogo, "agendar": agendar, "aviso-de-privacidad": aviso}
 WEB_SLUGS = ("familia", "empresas", "patrimonio", "ciber", "firma", "metodo", "contacto")
-ACTIVOS = ("mx.css", "web.css", "catalogo.css", "market.js", "site.js", "agenda.js", "analytics.js", "apple-icon.png",
+ACTIVOS = ("mx.css", "web.css", "catalogo.css", "market.js", "site.js", "agenda.js", "analytics.js", "motion.js", "apple-icon.png",
            "logo-azul.webp", "logo-azul-sm.webp", "logo-azul-head.webp", "logo-azul-crop.webp",
-           "logo-negro.webp", "logo-negro-sm.webp", "logo-negro-head.webp", "logo-negro-crop.webp")
+           "logo-negro.webp", "logo-negro-sm.webp", "logo-negro-head.webp", "logo-negro-crop.webp", "equipo-1.webp")
 
 
 def rutas(html: str, sitio: str) -> str:
@@ -888,8 +1034,8 @@ def construir(sitio: str, paginas: dict) -> None:
     shutil.copy2(REPO / "assets" / "catalog.js", destino / "assets" / "catalog.js")
     for m in (REPO / "media").glob("hf*.webp"):
         shutil.copy2(m, destino / "media" / m.name)
-    if sitio == "web":
-        shutil.copy2(REPO / "media" / "hf3.mp4", destino / "media" / "hf3.mp4")
+    for m in (REPO / "media").glob("hf*.mp4"):
+        shutil.copy2(m, destino / "media" / m.name)
     vercel = json.loads((REPO / "vercel.json").read_text(encoding="utf-8"))
     vercel.pop("redirects", None)
     csp = vercel["headers"][0]["headers"][0]

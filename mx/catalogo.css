@@ -182,3 +182,22 @@ body { background: var(--cat-bg); color: var(--cat-text); }
 .check input { accent-color: var(--gold); }
 .wa__title { color: var(--burgundy); }
 .fields input, .fields select, .fields textarea { background: rgba(0,0,0,.12); }
+
+/* Carrusel y mapa en la paleta del catálogo */
+.cine__count { color: var(--cat-soft); }
+.cine__count b { color: var(--gold-hi); }
+.cine__btn { border-color: var(--cat-line-2); color: var(--gold-hi); }
+.cine__btn:hover, .cine__btn:focus-visible { background: var(--gold); color: var(--burgundy-deep); }
+.mapa { --m-panel: var(--cat-panel); --m-ink: var(--cat-text); --m-soft: var(--cat-soft); --m-line: var(--cat-line); --m-title: #fff; box-shadow: 0 40px 80px -40px rgba(0,0,0,.8); }
+.mapa__stage { background: radial-gradient(70% 60% at 60% 55%, rgba(0,104,71,.4), transparent 70%), radial-gradient(50% 50% at 15% 10%, rgba(212,175,55,.14), transparent 70%), linear-gradient(160deg, #1c020a, #0f0105 75%); }
+.mapa__zona { color: #7fe0b8; }
+.mapa-sec .head h2 em { color: var(--gold-hi); }
+.mapa__filtros button { border-color: var(--cat-line-2); color: var(--cat-soft); }
+.mapa__filtros button:hover { border-color: var(--green-soft); color: #7fe0b8; }
+.mapa__filtros button.is-on { background: var(--gold); border-color: var(--gold); color: var(--burgundy-deep); }
+.mapa__chip { background: transparent; border-color: var(--cat-line); color: var(--cat-soft); }
+.mapa__chip:hover { color: var(--gold-hi); border-color: var(--gold); }
+.mapa__chip.is-prio { color: var(--gold-hi); border-color: var(--cat-line-2); }
+.mapa__chip.is-sede { color: #7fe0b8; border-color: var(--green-soft); }
+.mapa__chip.is-sel { background: var(--gold); border-color: var(--gold); color: var(--burgundy-deep); }
+.mapa__credito { color: var(--cat-soft); opacity: .7; }

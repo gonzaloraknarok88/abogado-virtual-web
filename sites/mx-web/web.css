@@ -153,3 +153,16 @@
 .band { background: linear-gradient(120deg, var(--burgundy-deep), var(--burgundy) 70%); }
 .footer { background: var(--burgundy-deep); }
 .sede__info h3, .agenda__ok-title { color: var(--burgundy); }
+
+/* Cinta de precios visible bajo la portada */
+.precios { background: var(--burgundy); color: var(--white); border-top: 3px solid var(--gold); border-bottom: 3px solid var(--green); }
+.precios__in { display: grid; grid-template-columns: auto 1fr auto; gap: 28px; align-items: center; padding: 26px 0; }
+.precios__t { margin: 0; font: 600 .62rem/1.4 var(--sans); letter-spacing: .28em; text-transform: uppercase; color: var(--gold-hi); max-width: 12em; }
+.precios ul { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, 1fr); }
+.precios li { padding: 0 20px; border-left: 1px solid rgba(255,255,255,.18); display: grid; gap: 4px; }
+.precios li > span { font-size: .78rem; color: rgba(255,255,255,.82); }
+.precios b { font: 700 1.7rem/1.1 var(--serif); color: var(--gold-hi); white-space: nowrap; }
+.precios__desde { font: 600 .56rem/1 var(--sans); letter-spacing: .2em; text-transform: uppercase; color: rgba(255,255,255,.7); }
+.precios li > small { font-size: .66rem; letter-spacing: .14em; text-transform: uppercase; color: rgba(255,255,255,.62); }
+@media (max-width: 1100px) { .precios__in { grid-template-columns: 1fr; } .precios ul { grid-template-columns: repeat(2, 1fr); gap: 18px 0; } }
+@media (max-width: 640px) { .precios ul { grid-template-columns: 1fr; } .precios li { border-left: 0; padding: 0; border-top: 1px solid rgba(255,255,255,.14); padding-top: 12px; } }
