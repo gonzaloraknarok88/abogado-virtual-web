@@ -1,21 +1,55 @@
-"""Genera las páginas del sitio AboVirtual México (/mx) con encabezado, pie y Concierge comunes.
+"""Genera los dos sitios de AboVirtual México, cada uno para su propio proyecto de Vercel:
 
-Uso (desde la raíz del repo):
+    sites/mx-web/       la WEB de la firma (inicio, áreas, firma, método, contacto, agendar)
+    sites/mx-catalogo/  el CATÁLOGO "La Colección" (servicios, precios, cotizador, agendar)
+
+Los dos llevan siempre el Concierge (bot), el calendario de agendamiento, WhatsApp y la
+dirección con mapa. Uso (desde la raíz del repo):
     python3 tools/build_mx.py
 
 Edita los textos aquí y vuelve a correrlo. Los precios NO van aquí: salen de mx/market.js
 (los spans con data-price / data-pay se rellenan solos en el navegador; el texto de este
-archivo es solo el respaldo sin JavaScript).
+archivo es solo el respaldo sin JavaScript). Las hojas de estilo y scripts viven en mx/ y
+se copian a cada sitio.
 """
 from __future__ import annotations
 
 import json
+import re
+import shutil
 from pathlib import Path
 
-RAIZ = Path(__file__).resolve().parent.parent / "mx"
+REPO = Path(__file__).resolve().parent.parent
+FUENTE = REPO / "mx"
+SITIOS = REPO / "sites"
+WEB_URL = "https://abovirtual-mexico-web.vercel.app"
+CAT_URL = "https://abovirtual-mexico-catalogo.vercel.app"
 WA = "https://wa.me/525612133685"
-FONTS = ("https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700"
-         "&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Montserrat:wght@300;400;500;600&display=swap")
+FONTS = ("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600"
+         "&family=Montserrat:wght@300;400;500;600&display=swap")
+
+# Sitio que se está generando ("web" o "catalogo"); lo fija main().
+SITIO = "web"
+
+DIRECCION = {
+    "linea1": "Plaza Carso · Torre Frisko",
+    "linea2": "Lago Zúrich 245, Puerta 5, Piso 7, Oficina 740",
+    "linea3": "Col. Ampliación Granada, Alcaldía Miguel Hidalgo",
+    "linea4": "C.P. 11529, Ciudad de México",
+}
+DIRECCION_TXT = ("Plaza Carso, Lago Zúrich 245, Puerta 5, Torre Frisko, Piso 7, Oficina 740, "
+                 "Col. Ampliación Granada, Alcaldía Miguel Hidalgo, C.P. 11529, Ciudad de México")
+MAPA = ("https://maps.google.com/maps?q=" + "Plaza+Carso+Torre+Frisko,+Lago+Z%C3%BArich+245,+Ampliaci%C3%B3n+Granada,"
+        "+Miguel+Hidalgo,+11529+Ciudad+de+M%C3%A9xico" + "&z=16&output=embed")
+MAPA_LINK = "https://www.google.com/maps/search/?api=1&query=Plaza+Carso+Torre+Frisko+Lago+Z%C3%BArich+245+Ciudad+de+M%C3%A9xico"
+
+ESTADOS = [
+    "Aguascalientes", "Baja California", "Baja California Sur", "Campeche", "Chiapas", "Chihuahua",
+    "Ciudad de México", "Coahuila", "Colima", "Durango", "Estado de México", "Guanajuato", "Guerrero",
+    "Hidalgo", "Jalisco", "Michoacán", "Morelos", "Nayarit", "Nuevo León", "Oaxaca", "Puebla", "Querétaro",
+    "Quintana Roo", "San Luis Potosí", "Sinaloa", "Sonora", "Tabasco", "Tamaulipas", "Tlaxcala", "Veracruz",
+    "Yucatán", "Zacatecas",
+]
 
 AREAS = [
     ("familia", "Familia y patrimonio", "Divorcios, pensión, custodia y capitulaciones"),
@@ -23,7 +57,7 @@ AREAS = [
     ("patrimonio", "Patrimonio 360", "Inmobiliario, inversiones y fideicomisos"),
     ("ciber", "Ciber y tecnología", "Fraudes, ciberseguridad, SEO y software"),
 ]
-NAV = [("catalogo", "Catálogo"), ("firma", "La firma"), ("metodo", "Método"), ("contacto", "Contacto")]
+NAV = [("catalogo", "Catálogo"), ("firma", "La firma"), ("metodo", "Método"), ("agendar", "Agendar"), ("contacto", "Contacto")]
 
 # Respaldo de precios sin JavaScript (deben coincidir con market.js).
 PRECIO = {
@@ -38,18 +72,27 @@ def esc(s: str) -> str:
 
 
 def head(slug: str, titulo: str, desc: str, extra_ld: dict | None = None) -> str:
-    url = "/mx/" if slug == "index" else f"/mx/{slug}"
+    base = CAT_URL if SITIO == "catalogo" else WEB_URL
+    ruta = "/" if slug in ("index", "catalogo") else f"/{slug}"
+    nombre = "AboVirtual México · Catálogo La Colección" if SITIO == "catalogo" else "AboVirtual México"
     ld = {
-        "@context": "https://schema.org", "@type": "LegalService", "name": "AboVirtual México",
-        "url": "https://abovirtual-mexico.vercel.app/mx/", "image": "/mx/monograma.svg",
+        "@context": "https://schema.org", "@type": "LegalService", "name": nombre,
+        "url": base + "/", "image": base + "/logo-azul.webp", "logo": base + "/logo-azul.webp",
         "telephone": "+525612133685", "priceRange": "$$$",
-        "areaServed": [{"@type": "City", "name": c} for c in (
-            "Ciudad de México", "Monterrey", "San Pedro Garza García", "Guadalajara", "Zapopan",
-            "Cancún", "Playa del Carmen", "Acapulco", "Querétaro")],
-        "address": {"@type": "PostalAddress", "addressLocality": "Ciudad de México", "addressCountry": "MX"},
+        "areaServed": [{"@type": "Country", "name": "México"}] + [{"@type": "State", "name": e} for e in ESTADOS],
+        "address": {"@type": "PostalAddress",
+                    "streetAddress": "Plaza Carso, Lago Zúrich 245, Puerta 5, Torre Frisko, Piso 7, Oficina 740",
+                    "addressLocality": "Ciudad de México", "addressRegion": "CDMX", "postalCode": "11529",
+                    "addressCountry": "MX"},
+        "openingHoursSpecification": [
+            {"@type": "OpeningHoursSpecification", "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"], "opens": "10:00", "closes": "20:00"},
+            {"@type": "OpeningHoursSpecification", "dayOfWeek": "Saturday", "opens": "10:00", "closes": "14:00"}],
     }
     lds = [ld] + ([extra_ld] if extra_ld else [])
     ld_html = "\n".join(f'<script type="application/ld+json">{json.dumps(x, ensure_ascii=False)}</script>' for x in lds)
+    hoja = "catalogo.css" if SITIO == "catalogo" else "web.css"
+    color = "#010101" if SITIO == "catalogo" else "#13243e"
+    og = base + ("/logo-negro.webp" if SITIO == "catalogo" else "/logo-azul.webp")
     return f"""<!doctype html>
 <html lang="es-MX">
 <head>
@@ -57,47 +100,51 @@ def head(slug: str, titulo: str, desc: str, extra_ld: dict | None = None) -> str
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{esc(titulo)}</title>
 <meta name="description" content="{esc(desc)}">
-<meta name="theme-color" content="#800020">
-<link rel="canonical" href="{url}">
-<link rel="alternate" hreflang="es-MX" href="{url}">
+<meta name="theme-color" content="{color}">
+<link rel="canonical" href="{base}{ruta}">
+<link rel="alternate" hreflang="es-MX" href="{base}{ruta}">
 <link rel="alternate" hreflang="es-CL" href="https://www.abogadovirtualchile.cl/">
 <meta property="og:type" content="website">
 <meta property="og:title" content="{esc(titulo)}">
 <meta property="og:description" content="{esc(desc)}">
-<meta property="og:image" content="/mx/monograma.svg">
+<meta property="og:image" content="{og}">
 <meta property="og:locale" content="es_MX">
-<link rel="icon" href="/mx/monograma.svg" type="image/svg+xml">
+<link rel="icon" href="/mx/apple-icon.png" type="image/png">
+<link rel="apple-touch-icon" href="/mx/apple-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="{FONTS}" rel="stylesheet">
 <link rel="stylesheet" href="/mx/mx.css">
+<link rel="stylesheet" href="/mx/{hoja}">
 {ld_html}
 <script src="/mx/market.js" defer></script>
 <script src="/assets/catalog.js" defer></script>
 <script src="/mx/site.js" defer></script>
+<script src="/mx/agenda.js" defer></script>
 </head>
 """
 
 
 def header(activo: str) -> str:
+    if SITIO == "catalogo":
+        return cheader(activo)
     cur = lambda s: ' aria-current="page"' if s == activo else ""
     drop = "".join(f'<a href="/mx/{s}"{cur(s)}>{n}<small>{d}</small></a>' for s, n, d in AREAS)
     nav = "".join(f'<a href="/mx/{s}"{cur(s)}>{n}</a>' for s, n in NAV)
     mob = "".join(f'<a class="sub" href="/mx/{s}">{n}</a>' for s, n, _ in AREAS)
     mob_nav = "".join(f'<a href="/mx/{s}">{n}</a>' for s, n in NAV)
     area_on = ' aria-current="page"' if activo in [a[0] for a in AREAS] else ""
-    return f"""<body class="page-{activo}">
+    return f"""<body class="page-{activo} sitio-web">
 <a class="skip" href="#main">Saltar al contenido</a>
-<div class="flag" aria-hidden="true"></div>
 <div class="topbar"><div class="wrap topbar__in">
-  <span><b>México</b> · CDMX · Monterrey · Guadalajara · Cancún · Acapulco · Querétaro</span>
+  <span><b>Todo México</b> · 32 estados · Oficina en Plaza Carso, CDMX</span>
   <span><a data-wa="mx" href="{WA}" target="_blank" rel="noopener noreferrer">WhatsApp +52 56 1213 3685</a></span>
 </div></div>
 <header class="header" id="top">
   <div class="wrap header__in">
     <a href="/mx/" class="logo" aria-label="AboVirtual México, inicio">
-      <img class="logo__mono" src="/mx/monograma.svg" alt="" width="44" height="44">
-      <span class="logo__word"><span class="logo__name">ABOVIRTUAL</span><span class="logo__tag">México · Legal &amp; Patrimonio</span></span>
+      <img class="logo__img" src="/mx/logo-azul-head.webp" alt="AboVirtual · Abogados siempre conectados" width="159" height="140">
+      <span class="logo__word"><span class="logo__name">AboVirtual México</span><span class="logo__tag">Sitio web oficial</span></span>
     </a>
     <nav class="menu" aria-label="Principal">
       <div class="menu__item"><a href="/mx/#areas"{area_on}>Áreas</a><div class="menu__drop">{drop}</div></div>
@@ -111,27 +158,56 @@ def header(activo: str) -> str:
 """
 
 
-FOOTER = f"""</main>
+def cheader(activo: str) -> str:
+    return f"""<body class="page-{activo} sitio-catalogo">
+<a class="skip" href="#main">Saltar al contenido</a>
+<div class="cbar"><div class="wrap cbar__in">
+  <span><b>Catálogo oficial 2026</b> · Precios en MXN con IVA · Todo México</span>
+  <span><a href="/mx/">Ir a la web de la firma →</a></span>
+</div></div>
+<header class="cheader" id="top">
+  <div class="wrap cheader__in">
+    <nav class="cnav cnav--start" aria-label="Catálogo"><a href="/mx/catalogo#coleccion">Colección</a><a href="/mx/catalogo#cotizar">Cotizador</a><a href="/mx/agendar">Agendar</a></nav>
+    <a class="cheader__brand" href="/mx/catalogo" aria-label="Catálogo AboVirtual México, inicio">
+      <img src="/mx/logo-negro-head.webp" alt="AboVirtual · Abogados siempre conectados" width="172" height="140">
+      <span><b>La Colección</b><small>Catálogo · AboVirtual México</small></span>
+    </a>
+    <nav class="cnav cnav--end" aria-label="Accesos"><a href="/mx/catalogo#sede">Oficina</a><a class="cbtn" href="/mx/agendar">Agendar cita</a></nav>
+  </div>
+</header>
+<main id="main">
+"""
+
+
+def footer() -> str:
+    cat = SITIO == "catalogo"
+    marca = ('<a href="/mx/catalogo" class="cheader__brand" aria-label="Catálogo AboVirtual México"><img src="/mx/logo-negro-head.webp" alt="" width="172" height="140" loading="lazy"></a>'
+             if cat else
+             '<a href="/mx/" class="logo" aria-label="AboVirtual México, inicio"><img class="logo__img" src="/mx/logo-azul-head.webp" alt="" width="159" height="140" loading="lazy"></a>')
+    avatar = "/mx/logo-negro-sm.webp" if cat else "/mx/logo-azul-sm.webp"
+    nota = ("Catálogo oficial de AboVirtual México: servicios, honorarios y cotizador. La firma atiende en línea en los 32 estados."
+            if cat else
+            "Firma legal e inmobiliaria para empresarios, ejecutivos y familias de patrimonio, con atención en línea en los 32 estados y oficina en la Ciudad de México. Parte del Holding Merlink Mastery.")
+    return f"""</main>
 
 <footer class="footer">
   <div class="wrap">
     <div class="footer__in">
       <div>
-        <a href="/mx/" class="logo" aria-label="AboVirtual México, inicio">
-          <img class="logo__mono" src="/mx/monograma.svg" alt="" width="44" height="44" loading="lazy">
-          <span class="logo__word"><span class="logo__name">ABOVIRTUAL</span><span class="logo__tag">México · Legal &amp; Patrimonio</span></span>
-        </a>
-        <p style="margin-top:22px">Firma legal e inmobiliaria para empresarios, ejecutivos y familias de patrimonio. Parte del Holding Merlink Mastery, con operación en México y Chile.</p>
+        {marca}
+        <p style="margin-top:22px">{nota}</p>
+        <address><b>{DIRECCION["linea1"]}</b><br>{DIRECCION["linea2"]}<br>{DIRECCION["linea3"]}<br>{DIRECCION["linea4"]}<br><a href="{MAPA_LINK}" target="_blank" rel="noopener noreferrer">Ver en Google Maps →</a></address>
       </div>
       <div>
-        <h4>Áreas</h4>
-        <ul>{"".join(f'<li><a href="/mx/{s}">{n}</a></li>' for s, n, _ in AREAS)}<li><a href="/mx/catalogo">Catálogo y precios</a></li></ul>
+        <h4>{"Catálogo" if cat else "Áreas"}</h4>
+        <ul>{"".join(f'<li><a href="/mx/{s}">{n}</a></li>' for s, n, _ in AREAS) if not cat else '<li><a href="/mx/catalogo#coleccion">La Colección</a></li><li><a href="/mx/catalogo#cotizar">Cotizador</a></li><li><a href="/mx/agendar">Agendar cita</a></li>'}<li><a href="/mx/catalogo">Catálogo y precios</a></li></ul>
       </div>
       <div>
-        <h4>La firma</h4>
+        <h4>{"La firma" if not cat else "Web de la firma"}</h4>
         <ul>
           <li><a href="/mx/firma">Quiénes somos</a></li>
           <li><a href="/mx/metodo">Método y pagos</a></li>
+          <li><a href="/mx/agendar">Agendar cita</a></li>
           <li><a href="/mx/contacto">Contacto</a></li>
           <li><a data-wa="mx" href="{WA}" target="_blank" rel="noopener noreferrer">WhatsApp +52 56 1213 3685</a></li>
           <li><a href="/mx/aviso-de-privacidad">Aviso de privacidad</a></li>
@@ -139,7 +215,7 @@ FOOTER = f"""</main>
       </div>
     </div>
     <div class="footer__legal">
-      <span>© 2026 AboVirtual México</span>
+      <span>© 2026 AboVirtual México · {"Catálogo" if cat else "Sitio web"}</span>
       <span>Precios en MXN con IVA incluido, vigentes a noviembre de 2026. Esta información no constituye asesoría legal.</span>
     </div>
   </div>
@@ -147,8 +223,8 @@ FOOTER = f"""</main>
 
 <section class="bot" id="bot" role="dialog" aria-label="Concierge AboVirtual México" hidden>
   <header class="bot__head">
-    <img class="bot__avatar" src="/mx/monograma.svg" alt="" width="42" height="42">
-    <div><p class="bot__name">Concierge AboVirtual</p><p class="bot__status">En línea · México</p></div>
+    <img class="bot__avatar" src="{avatar}" alt="" width="42" height="42">
+    <div><p class="bot__name">Concierge AboVirtual</p><p class="bot__status">En línea · Todo México</p></div>
     <button type="button" class="bot__close" id="botClose" aria-label="Cerrar Concierge">×</button>
   </header>
   <div class="bot__log" id="botLog" aria-live="polite"></div>
@@ -170,6 +246,53 @@ FOOTER = f"""</main>
 </div>
 </body>
 </html>
+"""
+
+
+def sede(titulo: str = "Nuestra oficina en la Ciudad de México") -> str:
+    return f"""<section class="section section--onyx" id="sede"><div class="wrap">
+  {head_block("Dirección", titulo, "Reuniones presenciales con cita previa. En el resto del país le atendemos por videollamada, en hora del centro.")}
+  <div class="sede">
+    <div class="sede__info">
+      <h3>{DIRECCION["linea1"]}</h3>
+      <address><b>{DIRECCION["linea2"]}</b><br>{DIRECCION["linea3"]}<br>{DIRECCION["linea4"]}</address>
+      <ul>
+        <li>Lunes a viernes: presencial 10:00 a 17:30 · videollamada 17:30 a 20:00</li>
+        <li>Sábado: 10:00 a 14:00 · Domingo: cerrado</li>
+        <li>WhatsApp: +52 56 1213 3685</li>
+      </ul>
+      <div class="actions"><a class="btn btn--gold" href="/mx/agendar">Agendar cita</a><a class="btn btn--line" href="{MAPA_LINK}" target="_blank" rel="noopener noreferrer">Cómo llegar</a></div>
+    </div>
+    <div class="sede__map"><iframe src="{MAPA}" title="Mapa: Plaza Carso, Torre Frisko, Lago Zúrich 245, Ciudad de México" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe></div>
+  </div>
+</div></section>
+"""
+
+
+def agenda(titulo: str = "Agende su reunión privada", clase: str = "section") -> str:
+    return f"""<section class="{clase}" id="agenda"><div class="wrap agenda-wrap">
+  <div class="agenda-wrap__intro">
+    <p class="eyebrow">Calendario de agendamiento</p>
+    <h2>{titulo}</h2>
+    <div class="flag flag--thin" aria-hidden="true"></div>
+    <p>Elija modalidad, día y hora. Su solicitud llega a nuestro WhatsApp y un abogado le confirma la cita.</p>
+    <ul>
+      <li>Presencial en Plaza Carso, CDMX, de lunes a viernes de 10:00 a 17:30</li>
+      <li>Videollamada desde cualquier estado, de 17:30 a 20:00</li>
+      <li>Sábado de 10:00 a 14:00 · citas de 45 minutos</li>
+      <li>Agréguela a Google Calendar o descargue la invitación</li>
+    </ul>
+  </div>
+  <div class="agenda" data-agenda><noscript><p>Para agendar sin JavaScript, escríbanos por WhatsApp al <a href="{WA}">+52 56 1213 3685</a>.</p></noscript><p class="agenda__hint">Cargando calendario…</p></div>
+</div></section>
+"""
+
+
+def cobertura() -> str:
+    return f"""<section class="section" id="cobertura"><div class="wrap">
+  {head_block("Cobertura nacional", "Atendemos en todo México", "Los 32 estados, por videollamada y con trámites coordinados en cada entidad. Nuestro foco: empresarios, directivos, médicos especialistas, inversionistas y familias de patrimonio.")}
+  {ciudades()}
+</div></section>
 """
 
 
@@ -216,7 +339,7 @@ def svc(sid: str, titulo: str, texto: str, puntos: list[str], desde: bool = Fals
 def band(h2: str, p: str, texto_wa: str) -> str:
     return f"""<section class="band"><div class="wrap band__in">
   <div><h2>{h2}</h2><p>{p}</p></div>
-  <div class="actions" style="margin:0">{wa(texto_wa, "Hablar por WhatsApp", "btn btn--gold", "band_wa")}<a class="btn btn--white" href="/mx/contacto">Agendar reunión privada</a></div>
+  <div class="actions" style="margin:0">{wa(texto_wa, "Hablar por WhatsApp", "btn btn--gold", "band_wa")}<a class="btn btn--white" href="/mx/agendar">Agendar reunión privada</a></div>
 </div></section>
 """
 
@@ -229,12 +352,14 @@ CIUDADES = [
     ("Ciudad de México", "Polanco · Lomas · Santa Fe · Pedregal"), ("Nuevo León", "San Pedro Garza García · Monterrey"),
     ("Jalisco", "Guadalajara · Zapopan"), ("Quintana Roo", "Cancún · Playa del Carmen · Tulum"),
     ("Guerrero", "Acapulco Diamante"), ("Querétaro", "Juriquilla · Centro Sur"),
-    ("Todo México", "Atención en línea por videollamada"), ("Internacional", "Chile · próximamente EE. UU."),
+    ("Todo México", "Los 32 estados por videollamada"), ("Oficina CDMX", "Plaza Carso · Torre Frisko · Miguel Hidalgo"),
 ]
 
 
 def ciudades() -> str:
-    return '<ul class="cities">' + "".join(f"<li><b>{c}</b><span>{z}</span></li>" for c, z in CIUDADES) + "</ul>"
+    return ('<ul class="cities">' + "".join(f"<li><b>{c}</b><span>{z}</span></li>" for c, z in CIUDADES) + "</ul>"
+            + '<p class="estados__title">Atención en los 32 estados</p><ul class="estados" aria-label="Los 32 estados de México">'
+            + "".join(f"<li>{e}</li>" for e in ESTADOS) + "</ul>")
 
 
 # ============================ PÁGINAS ============================
@@ -297,12 +422,12 @@ def inicio() -> str:
     <p class="hero__lead">Abogados para empresarios, ejecutivos y familias de patrimonio. Divorcios, familia, empresas e inmobiliario con precio claro, total discreción y atención en línea en todo México.</p>
     <div class="actions">
       {wa("Hola, quiero hablar con un abogado de AboVirtual México.", "Hablar con un abogado por WhatsApp", "btn btn--gold", "hero_wa")}
-      <a class="btn btn--line" href="/mx/catalogo">Ver servicios y precios</a>
+      <a class="btn btn--line" href="/mx/agendar">Agendar reunión</a>
     </div>
     <ul class="stats" aria-label="La firma en cifras">
       <li><b>24</b><span>servicios con precio publicado</span></li>
       <li><b>IVA</b><span>incluido en cada precio</span></li>
-      <li><b>6</b><span>estados de atención prioritaria</span></li>
+      <li><b>32</b><span>estados con atención en línea</span></li>
       <li><b>24/7</b><span>Concierge digital</span></li>
     </ul>
   </div>
@@ -342,8 +467,10 @@ def inicio() -> str:
   {ciudades()}
 </div></section>
 
+{agenda()}
+{sede()}
 {band("Compre tiempo. Compre tranquilidad.", "Una reunión privada basta para saber exactamente qué hacer y cuánto cuesta.", "Hola, quiero agendar una reunión privada con AboVirtual México.")}
-""" + FOOTER
+""" + footer()
 
 
 def familia() -> str:
@@ -387,7 +514,7 @@ def familia() -> str:
   {faq(preguntas)}
 </div></section>
 {band("Una conversación privada cambia el resultado.", "Cuéntenos su caso por WhatsApp. Un abogado le responde con total confidencialidad.", "Hola, necesito orientación sobre un divorcio o un asunto de familia.")}
-""" + FOOTER
+""" + footer()
 
 
 def empresas() -> str:
@@ -424,7 +551,7 @@ def empresas() -> str:
   <ul class="cities">{"".join(f"<li><b>{a}</b><span>{b}</span></li>" for a, b in sectores)}</ul>
 </div></section>
 {band("Dirija su empresa. Nosotros cuidamos el frente legal.", "Reunión corporativa por videollamada en su horario.", "Hola, quiero una propuesta legal para mi empresa.")}
-""" + FOOTER
+""" + footer()
 
 
 def patrimonio() -> str:
@@ -464,7 +591,7 @@ def patrimonio() -> str:
   {ciudades()}
 </div></section>
 {band("Su patrimonio merece un plan, no una corazonada.", "Agende una reunión para revisar su operación o su portafolio.", "Hola, quiero revisar una operación inmobiliaria o un plan de inversión.")}
-""" + FOOTER
+""" + footer()
 
 
 def ciber() -> str:
@@ -493,7 +620,7 @@ def ciber() -> str:
   <ul class="svcs">{servicios}</ul>
 </div></section>
 {band("No deje pasar el tiempo.", "Los plazos para reclamar al banco son cortos. Escríbanos hoy.", "Hola, necesito ayuda con un fraude o un tema de ciberseguridad.")}
-""" + FOOTER
+""" + footer()
 
 
 def firma() -> str:
@@ -512,7 +639,7 @@ def firma() -> str:
                 "AboVirtual México: abogados mexicanos con cédula, control de calidad central y un holding con operación en México y Chile, en expansión a Estados Unidos.") + header("firma") + phero(
         "La firma", "La firma", "Abogados mexicanos.", "Estándar internacional.",
         "AboVirtual México es una empresa independiente del Holding Merlink Mastery. Combina abogados locales con un método probado de precios publicados, atención digital y control de calidad central.",
-        "/media/hf3.webp", '<a class="btn btn--gold" href="/mx/contacto">Agendar reunión privada</a><a class="btn btn--line" href="/mx/metodo">Conocer el método</a>') + f"""
+        "/media/hf3.webp", '<a class="btn btn--gold" href="/mx/agendar">Agendar reunión privada</a><a class="btn btn--line" href="/mx/metodo">Conocer el método</a>') + f"""
 <section class="section"><div class="wrap">
   {head_block("Nuestros pilares", "Lo que no negociamos")}
   <ul class="pillars">{"".join(f"<li><b>{n}</b><h3>{t}</h3><p>{p}</p></li>" for n, t, p in pilares)}</ul>
@@ -525,15 +652,16 @@ def firma() -> str:
 
 <section class="section"><div class="wrap">
   {head_block("Holding Merlink Mastery", "Una firma con alcance internacional")}
-  <div class="firm-note" style="margin-top:0"><img class="logo__mono" src="/mx/monograma.svg" alt="" width="64" height="64"><p>Operación en México y Chile, con expansión a Estados Unidos, España y Brasil. AboVirtual (legal), Smart Property Inversiones (inmobiliario) y Merlink Mastery (tecnología y marketing) trabajan como un solo equipo para usted.</p></div>
+  <div class="firm-note" style="margin-top:0"><img class="logo__mono" src="/mx/logo-azul-sm.webp" alt="" width="64" height="64"><p>Operación en México y Chile, con expansión a Estados Unidos, España y Brasil. AboVirtual (legal), Smart Property Inversiones (inmobiliario) y Merlink Mastery (tecnología y marketing) trabajan como un solo equipo para usted.</p></div>
 </div></section>
 
 <section class="section section--onyx"><div class="wrap">
-  {head_block("Cobertura", "Atención en todo México", "Reunión presencial en la CDMX con cita previa. En el resto del país, por videollamada, y coordinamos los trámites en cada estado.")}
+  {head_block("Cobertura", "Atención en todo México", "Atención en los 32 estados por videollamada y reuniones presenciales en nuestra oficina de Plaza Carso, CDMX. Coordinamos los trámites en cada estado.")}
   {ciudades()}
 </div></section>
+{sede()}
 {band("Conozca a su abogado antes de decidir.", "La primera reunión es privada y sin compromiso de contratación.", "Hola, quiero conocer a AboVirtual México y agendar una reunión.")}
-""" + FOOTER
+""" + footer()
 
 
 def metodo() -> str:
@@ -559,7 +687,7 @@ def metodo() -> str:
                 "Cómo trabajamos en AboVirtual México: reunión privada, propuesta por escrito, abogado asignado y pagos en cuotas. Preguntas frecuentes.") + header("metodo") + phero(
         "Método", "El método AboVirtual", "Usted decide.", "Nosotros ejecutamos.",
         "Cinco pasos claros, una propuesta por escrito y un abogado que le reporta. Así se evita lo que más cansa de un asunto legal: no saber en qué va.",
-        "/media/hf2.webp", '<a class="btn btn--gold" href="/mx/contacto">Agendar reunión privada</a>') + f"""
+        "/media/hf2.webp", '<a class="btn btn--gold" href="/mx/agendar">Agendar reunión privada</a>') + f"""
 <section class="section"><div class="wrap">
   {head_block("Paso a paso", "Del primer mensaje al cierre")}
   <ol class="steps steps--5" style="margin-top:0">{"".join(f"<li><span>{n}</span><h3>{t}</h3><p>{p}</p></li>" for n, t, p in pasos)}</ol>
@@ -575,7 +703,7 @@ def metodo() -> str:
   {faq(preguntas)}
 </div></section>
 {band("¿Listo para empezar?", "Escríbanos y agende su reunión privada.", "Hola, quiero agendar una reunión privada con AboVirtual México.")}
-""" + FOOTER
+""" + footer()
 
 
 def contacto() -> str:
@@ -585,16 +713,17 @@ def contacto() -> str:
     perfiles = ["Dueño de empresa", "Director o ejecutivo", "Profesional independiente", "Inversionista", "Otro"]
     opts = lambda xs: "".join(f"<option>{x}</option>" for x in xs)
     return head("contacto", "Contacto · Agende una reunión privada · AboVirtual México",
-                "Agende una reunión privada con AboVirtual México por WhatsApp +52 56 1213 3685, videollamada o cita en la CDMX.") + header("contacto") + phero(
+                "Agende una reunión privada con AboVirtual México: oficina en Plaza Carso (Torre Frisko, Miguel Hidalgo, CDMX), videollamada en todo México o WhatsApp +52 56 1213 3685.") + header("contacto") + phero(
         "Contacto", "Contacto", "Agende una", "reunión privada.",
         "Déjenos sus datos y un abogado le escribe por WhatsApp. Si prefiere adelantar, escríbanos directo.",
         "/media/hf3.webp", wa("Hola, quiero agendar una reunión privada con AboVirtual México.", "WhatsApp +52 56 1213 3685", "btn btn--gold", "contacto_wa")) + f"""
 <section class="section section--bone"><div class="wrap contact">
   <div class="contact__info">
     <div><h3>WhatsApp</h3><p><a data-wa="mx" href="{WA}" target="_blank" rel="noopener noreferrer">+52 56 1213 3685</a></p></div>
-    <div><h3>Reunión presencial</h3><p>Ciudad de México, con cita previa.</p></div>
-    <div><h3>Videollamada</h3><p>Google Meet desde cualquier estado de México, en hora del centro.</p></div>
-    <div><h3>Horario</h3><p>Lunes a viernes, 9:00 a 19:00 · Sábado, 10:00 a 14:00. El Concierge responde 24/7.</p></div>
+    <div><h3>Oficina</h3><p>{DIRECCION_TXT}. Con cita previa.</p></div>
+    <div><h3>Videollamada</h3><p>Google Meet desde cualquiera de los 32 estados, en hora del centro.</p></div>
+    <div><h3>Horario</h3><p>Lunes a viernes: presencial 10:00 a 17:30 y videollamada 17:30 a 20:00 · Sábado, 10:00 a 14:00. El Concierge responde 24/7.</p></div>
+    <div><h3>Agenda en línea</h3><p><a href="/mx/agendar">Elija día y hora en nuestro calendario →</a></p></div>
     <div><h3>Confidencialidad</h3><p>Su información se trata conforme a la LFPDPPP y a nuestro <a href="/mx/aviso-de-privacidad">aviso de privacidad</a>.</p></div>
   </div>
   <form class="quote__form" id="contactForm" novalidate>
@@ -617,7 +746,8 @@ def contacto() -> str:
     <p class="small soft" style="margin-top:14px">Información confidencial, tratada conforme a la LFPDPPP.</p>
   </form>
 </div></section>
-""" + FOOTER
+{sede()}
+""" + footer()
 
 
 def catalogo() -> str:
@@ -629,11 +759,11 @@ def catalogo() -> str:
              ("Cuotas", "El total de las cuotas siempre es igual al precio publicado."),
              ("A evaluar", "Se cotiza por escrito después de la primera reunión, sin compromiso."),
              ("Gastos externos", "Copias certificadas, peritos o derechos se informan antes de empezar.")]
-    return head("catalogo", "Catálogo y honorarios · La Colección · AboVirtual México",
+    return head("catalogo", "Catálogo La Colección · Servicios y honorarios · AboVirtual México",
                 "Catálogo completo de AboVirtual México: 24 servicios legales, inmobiliarios y de tecnología con precio en MXN, cuotas y cotizador en línea.") + header("catalogo") + f"""
 <section class="maison"><div class="wrap">
-  <img class="maison__seal" src="/mx/monograma.svg" alt="" width="92" height="92">
-  <p class="eyebrow" style="justify-content:center">AboVirtual México · Edición 2026</p>
+  <img class="maison__seal" src="/mx/logo-negro-crop.webp" alt="AboVirtual · Abogados siempre conectados" width="390" height="317">
+  <p class="eyebrow" style="justify-content:center">Catálogo oficial · Edición 2026 · Todo México</p>
   <h1>La Colección<em>Catálogo de servicios y honorarios</em></h1>
   <p>Veinticuatro servicios legales, inmobiliarios y de tecnología, con precio publicado, cuotas y un cotizador para armar su propuesta en minutos.</p>
   <div class="actions actions--center"><a class="btn btn--ink" href="#coleccion">Explorar la colección</a><a class="btn btn--line" href="#cotizar">Armar mi cotización</a></div>
@@ -665,7 +795,7 @@ def catalogo() -> str:
       <div class="fields">
         <label>Nombre<input name="nombre" autocomplete="name" maxlength="80"></label>
         <label>Ciudad y colonia<input name="zona" autocomplete="address-level2" maxlength="60" placeholder="Ej. San Pedro Garza García"></label>
-        <label class="full">Modalidad<select name="modalidad"><option>Videollamada (Google Meet)</option><option>Presencial en CDMX (con cita)</option></select></label>
+        <label class="full">Modalidad<select name="modalidad"><option>Videollamada (Google Meet)</option><option>Presencial en Plaza Carso, CDMX (con cita)</option></select></label>
         <label class="full">Su caso (opcional)<textarea name="caso" rows="3" maxlength="600"></textarea></label>
       </div>
     </fieldset>
@@ -678,14 +808,84 @@ def catalogo() -> str:
     <div class="quote__actions"><button type="submit" class="btn btn--ink" data-line="mx">Enviar por WhatsApp · +52 56 1213 3685</button></div>
   </form>
 </div></section>
+{agenda("Agende su cita desde el catálogo", "section section--onyx")}
+{sede()}
 {band("¿No encuentra su caso?", "Cada asunto es distinto. Cuéntenos el suyo y le proponemos un plan.", "Hola, tengo un caso que no aparece en el catálogo.")}
-""" + FOOTER
+""" + footer()
 
 
-PAGINAS = {"index": inicio, "familia": familia, "empresas": empresas, "patrimonio": patrimonio, "ciber": ciber,
-           "firma": firma, "metodo": metodo, "contacto": contacto, "catalogo": catalogo}
+def agendar() -> str:
+    cuerpo_titulo = "Agendar cita · Calendario · AboVirtual México" + (" · Catálogo" if SITIO == "catalogo" else "")
+    return head("agendar", cuerpo_titulo,
+                "Agende su cita con AboVirtual México: presencial en Plaza Carso (Torre Frisko, CDMX) o por videollamada desde cualquiera de los 32 estados.") + header("agendar") + f"""
+<section class="section" style="padding-bottom:0"><div class="wrap">
+  <p class="crumbs"><a href="{'/mx/catalogo' if SITIO == 'catalogo' else '/mx/'}">Inicio</a><span>/</span>Agendar</p>
+</div></section>
+{agenda("Agende su reunión privada")}
+{sede()}
+""" + footer()
+
+
+def aviso() -> str:
+    cuerpo = (FUENTE / "aviso-de-privacidad.html").read_text(encoding="utf-8")
+    articulo = cuerpo[cuerpo.index('<article'):cuerpo.index('</article>') + len('</article>')]
+    articulo = articulo.replace("AboVirtual México (en adelante, «AboVirtual») es responsable",
+                                f"AboVirtual México (en adelante, «AboVirtual»), con domicilio en {DIRECCION_TXT}, es responsable")
+    return head("aviso-de-privacidad", "Aviso de privacidad · AboVirtual México",
+                "Aviso de privacidad integral de AboVirtual México conforme a la LFPDPPP.") + header("aviso") + articulo + "\n" + footer()
+
+
+PAGINAS_WEB = {"index": inicio, "familia": familia, "empresas": empresas, "patrimonio": patrimonio, "ciber": ciber,
+               "firma": firma, "metodo": metodo, "contacto": contacto, "agendar": agendar, "aviso-de-privacidad": aviso}
+PAGINAS_CAT = {"index": catalogo, "agendar": agendar, "aviso-de-privacidad": aviso}
+WEB_SLUGS = ("familia", "empresas", "patrimonio", "ciber", "firma", "metodo", "contacto")
+ACTIVOS = ("mx.css", "web.css", "catalogo.css", "market.js", "site.js", "agenda.js", "apple-icon.png",
+           "logo-azul.webp", "logo-azul-sm.webp", "logo-azul-head.webp", "logo-azul-crop.webp",
+           "logo-negro.webp", "logo-negro-sm.webp", "logo-negro-head.webp", "logo-negro-crop.webp")
+
+
+def rutas(html: str, sitio: str) -> str:
+    """Pasa las rutas /mx/... del generador a las de cada sitio (cada uno vive en la raíz de su dominio)."""
+    html = re.sub(r'/mx/([A-Za-z0-9-]+\.(?:css|js|webp|png|svg))', r'/\1', html)
+    if sitio == "web":
+        html = re.sub(r'/mx/catalogo(?=[#"?])', CAT_URL + "/", html)
+        return html.replace('"/mx/', '"/')
+    html = re.sub(r'/mx/catalogo(?=[#"?])', "/", html)
+    html = html.replace('"/mx/agendar', '"/agendar').replace('"/mx/aviso-de-privacidad', '"/aviso-de-privacidad')
+    html = re.sub(r'"/mx/(' + "|".join(WEB_SLUGS) + r')', '"' + WEB_URL + r'/\1', html)
+    html = html.replace('"/mx/#', '"' + WEB_URL + '/#').replace('"/mx/"', '"' + WEB_URL + '/"')
+    return html
+
+
+def construir(sitio: str, paginas: dict) -> None:
+    global SITIO
+    SITIO = sitio
+    destino = SITIOS / f"mx-{sitio}"
+    if destino.exists():
+        shutil.rmtree(destino)
+    (destino / "assets").mkdir(parents=True)
+    (destino / "media").mkdir()
+    for nombre, fn in paginas.items():
+        (destino / f"{nombre}.html").write_text(rutas(fn(), sitio), encoding="utf-8")
+    for a in ACTIVOS:
+        if a in ("web.css",) and sitio == "catalogo" or a == "catalogo.css" and sitio == "web":
+            continue
+        shutil.copy2(FUENTE / a, destino / a)
+    market = (FUENTE / "market.js").read_text(encoding="utf-8")
+    market = market.replace('catalogUrl: "/catalogo"', f'catalogUrl: "{CAT_URL + "/" if sitio == "web" else "/"}"')
+    (destino / "market.js").write_text(market, encoding="utf-8")
+    shutil.copy2(REPO / "assets" / "catalog.js", destino / "assets" / "catalog.js")
+    for m in (REPO / "media").glob("hf*.webp"):
+        shutil.copy2(m, destino / "media" / m.name)
+    if sitio == "web":
+        shutil.copy2(REPO / "media" / "hf3.mp4", destino / "media" / "hf3.mp4")
+    vercel = json.loads((REPO / "vercel.json").read_text(encoding="utf-8"))
+    vercel.pop("redirects", None)
+    (destino / "vercel.json").write_text(json.dumps(vercel, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    (destino / "robots.txt").write_text("User-agent: *\nAllow: /\n", encoding="utf-8")
+    print("ok", destino.relative_to(REPO), len(paginas), "páginas")
+
 
 if __name__ == "__main__":
-    for nombre, fn in PAGINAS.items():
-        (RAIZ / f"{nombre}.html").write_text(fn(), encoding="utf-8")
-        print("ok", nombre)
+    construir("web", PAGINAS_WEB)
+    construir("catalogo", PAGINAS_CAT)

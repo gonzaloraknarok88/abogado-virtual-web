@@ -54,6 +54,8 @@
     return node;
   };
   const ext = { target: "_blank", rel: "noopener noreferrer" };
+  // Los enlaces al mismo sitio (por ejemplo /agendar) se abren en la misma pestaña.
+  const linkAttrs = (u) => (/^https?:/i.test(u || "") ? ext : {});
 
   const track = (name) => {
     try {
@@ -77,7 +79,7 @@
     a.href = waUrl(line.number, a.dataset.waText || T.waHello);
   });
   document.querySelectorAll("[data-booking]").forEach((a) => {
-    if (BOOKING_URL) { a.href = BOOKING_URL; Object.assign(a, ext); a.target = "_blank"; a.rel = "noopener noreferrer"; }
+    if (BOOKING_URL) { a.href = BOOKING_URL; Object.assign(a, linkAttrs(BOOKING_URL)); }
     else { a.removeAttribute("href"); a.setAttribute("role", "button"); a.dataset.bot = "agenda"; }
   });
 
@@ -107,7 +109,7 @@
         el("button", { type: "button", class: "chip chip--solid", "data-bot": "svc:" + s.id }, T.want),
         el("button", { type: "button", class: "chip", "data-add": s.id, "aria-pressed": "false" }, T.addQuote),
         BOOKING_URL
-          ? el("a", { class: "chip", href: BOOKING_URL, ...ext, "data-track": "agendar_" + s.id }, T.book)
+          ? el("a", { class: "chip", href: BOOKING_URL + (BOOKING_URL.includes("?") ? "&" : "?") + "servicio=" + encodeURIComponent(s.id), ...linkAttrs(BOOKING_URL), "data-track": "agendar_" + s.id }, T.book)
           : el("button", { type: "button", class: "chip", "data-bot": "agenda" }, T.book)
       )
     );
@@ -244,7 +246,7 @@
       [].concat(texts).forEach((t) => say(t));
       opts.forEach((o) => {
         const node = o.href
-          ? el("a", { class: "opt opt--link", href: o.href, ...ext, "data-track": o.track }, o.label)
+          ? el("a", { class: "opt opt--link", href: o.href, ...linkAttrs(o.href), "data-track": o.track }, o.label)
           : el("button", { type: "button", class: "opt" }, o.label);
         if (!o.href) node.addEventListener("click", () => { say(o.label, "me"); o.go(); });
         botOpts.append(node);

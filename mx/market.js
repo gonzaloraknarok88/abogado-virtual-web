@@ -9,8 +9,9 @@ window.ABV_MARKET = {
   locale: "es-MX",
   currency: "MXN",
   currencySuffix: "MXN",
-  bookingUrl: "", // vacío: el asistente agenda por WhatsApp (zona horaria CDMX)
-  catalogUrl: "/mx/catalogo",
+  bookingUrl: "/agendar", // calendario de agendamiento propio (hora del centro, CDMX)
+  catalogUrl: "/catalogo", // el generador lo cambia por la dirección del sitio del catálogo
+  office: "Plaza Carso, Lago Zúrich 245, Puerta 5, Torre Frisko, Piso 7, Oficina 740, Col. Ampliación Granada, Miguel Hidalgo, C.P. 11529, Ciudad de México",
   whatsapp: [
     { key: "mx", label: "WhatsApp México", number: "525612133685", display: "+52 56 1213 3685" },
   ],
@@ -26,7 +27,7 @@ window.ABV_MARKET = {
     },
     {
       id: "presencial", label: "Reunión presencial en CDMX", ctx: "presencial en CDMX",
-      info: "Reuniones presenciales en la CDMX solo con cita previa. Te proponemos lugar y horario por WhatsApp.",
+      info: "Reuniones presenciales en nuestra oficina de Plaza Carso, Torre Frisko, piso 7, oficina 740 (Miguel Hidalgo, CDMX), con cita previa.",
     },
   ],
 
@@ -45,7 +46,7 @@ window.ABV_MARKET = {
       desc: "Divorcio voluntario: redactamos el convenio completo (bienes, hijos, alimentos) y te acompañamos hasta la sentencia.",
       price: 5190, pay: "Pago único", tag: "Precio único" },
     { id: "divorcio-incausado", area: "familia", name: "Divorcio incausado o régimen de convivencias",
-      desc: "Cuando tu pareja no está de acuerdo (en CDMX no necesitas expresar causa), o necesitas regular las convivencias con tus hijos.",
+      desc: "Cuando tu pareja no está de acuerdo (la ley no te exige expresar causa), o necesitas regular las convivencias con tus hijos.",
       price: 10390, installments: 2, pay: "En 2 cuotas", tag: "Más solicitado" },
     { id: "familia-integral", area: "familia", name: "Pensión alimenticia, guarda y custodia",
       desc: "Demanda, aumento, reducción o cancelación de pensión alimenticia, guarda y custodia y convivencias. Incluye la negociación previa.",
