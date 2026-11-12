@@ -4,7 +4,7 @@
       <stop offset="0" stop-color="#f2dd8c"/><stop offset=".5" stop-color="#d4af37"/><stop offset="1" stop-color="#9c7a1e"/>
     </linearGradient>
   </defs>
-  <rect width="64" height="64" fill="#0a0a0a"/>
+  <rect width="64" height="64" fill="#800020"/>
   <rect x="2.5" y="2.5" width="59" height="59" fill="none" stroke="url(#g)" stroke-width="1.2"/>
   <text x="32" y="40" text-anchor="middle" font-family="Cinzel, 'Times New Roman', serif" font-size="22" font-weight="600" letter-spacing="1" fill="url(#g)">AV</text>
   <rect x="16" y="49" width="10.67" height="2.4" fill="#0b6e4f"/>
