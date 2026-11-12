@@ -85,8 +85,10 @@
   const grid = document.getElementById("lista");
   const checks = document.getElementById("checks");
   const selected = new Set();
+  // En páginas sin catálogo (inicio, áreas, contacto) el asistente lleva al catálogo.
+  const CATALOG_URL = M.catalogUrl || "";
 
-  SERVICES.forEach((s, i) => {
+  if (grid) SERVICES.forEach((s, i) => {
     const dark = AREAS.find((a) => a.id === s.area)?.dark;
     const card = el("li", { class: "card" + (dark ? " card--dark" : ""), "data-area": s.area, id: "srv-" + s.id },
       el("div", { class: "card__top" },
@@ -112,7 +114,7 @@
     grid.append(card);
   });
 
-  AREAS.forEach((a) => {
+  if (checks) AREAS.forEach((a) => {
     const group = el("div", { class: "checks__group" }, el("p", { class: "checks__title", text: a.name }));
     SERVICES.filter((s) => s.area === a.id).forEach((s) => {
       const box = el("input", { type: "checkbox", name: "servicio", value: s.id, id: "chk-" + s.id });
@@ -128,7 +130,7 @@
   const tabs = document.querySelectorAll(".tab");
   const applyFilter = (f) => {
     tabs.forEach((t) => { const on = t.dataset.filter === f; t.classList.toggle("is-on", on); t.setAttribute("aria-pressed", String(on)); });
-    grid.querySelectorAll(".card").forEach((c) => { c.hidden = f !== "todo" && c.dataset.area !== f; });
+    grid?.querySelectorAll(".card").forEach((c) => { c.hidden = f !== "todo" && c.dataset.area !== f; });
   };
   tabs.forEach((tab) => tab.addEventListener("click", () => applyFilter(tab.dataset.filter)));
   document.querySelectorAll("[data-filter-go]").forEach((a) => a.addEventListener("click", () => applyFilter(a.dataset.filterGo)));
@@ -143,7 +145,7 @@
     on ? selected.add(id) : selected.delete(id);
     const box = document.getElementById("chk-" + id);
     if (box) box.checked = on;
-    const btn = grid.querySelector(`[data-add="${id}"]`);
+    const btn = grid?.querySelector(`[data-add="${id}"]`);
     if (btn) {
       btn.setAttribute("aria-pressed", String(on));
       btn.textContent = on ? T.inQuote : T.addQuote;
@@ -152,6 +154,7 @@
   }
 
   function refresh() {
+    if (!sumCount) return;
     const chosen = SERVICES.filter((s) => selected.has(s.id));
     const total = chosen.reduce((a, s) => a + (s.price || 0), 0);
     const anyFrom = chosen.some((s) => s.from);
@@ -165,25 +168,25 @@
     }
   }
 
-  grid.addEventListener("click", (e) => {
+  grid?.addEventListener("click", (e) => {
     const btn = e.target.closest("[data-add]");
     if (!btn) return;
     const id = btn.dataset.add;
     setSelected(id, !selected.has(id));
     track("cotizacion_agregar_" + id);
   });
-  checks.addEventListener("change", (e) => {
+  checks?.addEventListener("change", (e) => {
     if (e.target.name === "servicio") setSelected(e.target.value, e.target.checked);
   });
 
   const form = document.getElementById("quoteForm");
   let line = WA_LINES[0].key;
-  form.querySelectorAll("button[type=submit]").forEach((b) =>
+  form?.querySelectorAll("button[type=submit]").forEach((b) =>
     b.addEventListener("click", () => { line = b.dataset.line || WA_LINES[0].key; })
   );
   const clean = (v) => String(v || "").replace(/\s+/g, " ").trim();
 
-  form.addEventListener("submit", (e) => {
+  form?.addEventListener("submit", (e) => {
     e.preventDefault();
     const data = new FormData(form);
     const nombre = clean(data.get("nombre"));
@@ -281,6 +284,7 @@
       ]);
     },
     add(id) {
+      if (!grid && CATALOG_URL) { location.href = CATALOG_URL + "?add=" + encodeURIComponent(id) + "#cotizar"; return; }
       setSelected(id, true);
       ask(T.botAdded, [
         { label: T.botAddMore, go: flows.areas },
@@ -379,6 +383,8 @@
     if (a) track(a.dataset.track);
   });
 
+  // ?add=<id> preselecciona servicios al llegar al catálogo desde otra página.
+  new URLSearchParams(location.search).getAll("add").forEach((id) => { if (byId(id)) setSelected(id, true); });
   refresh();
 })();
 

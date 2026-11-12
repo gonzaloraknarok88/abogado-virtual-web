@@ -1,5 +1,5 @@
 /*
- * AboVirtual México · datos del mercado (CDMX)
+ * AboVirtual México · datos del mercado (nacional)
  * Para cambiar un precio, una cuota o el WhatsApp, edita SOLO este archivo.
  * Precios en MXN. price: null = valor según evaluación · 0 = gratis.
  * installments: número de cuotas (el motor las calcula para que sumen exacto el precio).
@@ -10,6 +10,7 @@ window.ABV_MARKET = {
   currency: "MXN",
   currencySuffix: "MXN",
   bookingUrl: "", // vacío: el asistente agenda por WhatsApp (zona horaria CDMX)
+  catalogUrl: "/mx/catalogo",
   whatsapp: [
     { key: "mx", label: "WhatsApp México", number: "525612133685", display: "+52 56 1213 3685" },
   ],
@@ -21,7 +22,7 @@ window.ABV_MARKET = {
   modes: [
     {
       id: "online", label: "Videollamada (Google Meet)", ctx: "por videollamada",
-      info: "Atención online por Google Meet desde cualquier punto de la CDMX y de todo México (hora del centro).",
+      info: "Atención online por Google Meet desde cualquier estado de México (hora del centro).",
     },
     {
       id: "presencial", label: "Reunión presencial en CDMX", ctx: "presencial en CDMX",
@@ -49,6 +50,9 @@ window.ABV_MARKET = {
     { id: "familia-integral", area: "familia", name: "Pensión alimenticia, guarda y custodia",
       desc: "Demanda, aumento, reducción o cancelación de pensión alimenticia, guarda y custodia y convivencias. Incluye la negociación previa.",
       price: 18590, pay: "En 3 cuotas mensuales" },
+    { id: "capitulaciones", area: "familia", name: "Capitulaciones y acuerdos prenupciales",
+      desc: "Régimen de bienes y acuerdos antes o durante el matrimonio para proteger empresa, acciones y propiedades.",
+      price: null, pay: "Valor según el patrimonio", tag: "Patrimonio" },
 
     // Empresas y PYMES
     { id: "nom-035", area: "empresas", name: "NOM-035 y protocolo contra acoso",
@@ -60,6 +64,12 @@ window.ABV_MARKET = {
     { id: "asesoria-pymes", area: "empresas", name: "Asesoría legal recurrente para PYMES",
       desc: "Contratos, cobranza, relaciones laborales y cumplimiento: tu área legal externa con una iguala mensual.",
       price: null, pay: "Iguala mensual a la medida", tag: "Empresas" },
+    { id: "empresa-familiar", area: "empresas", name: "Empresa familiar y protocolo de sucesión",
+      desc: "Gobierno corporativo, protocolo familiar y reglas de sucesión para que la empresa sobreviva a la siguiente generación.",
+      price: null, pay: "Plan a la medida", tag: "Alta dirección" },
+    { id: "contratos", area: "empresas", name: "Contratos mercantiles y corporativos",
+      desc: "Compraventa, distribución, prestación de servicios, confidencialidad y acuerdos entre socios, redactados y revisados.",
+      price: null, pay: "Valor según el contrato" },
     { id: "capacitaciones", area: "empresas", name: "Capacitaciones in company",
       desc: "Talleres para equipos y directivos: NOM-035, acoso laboral, protección de datos personales y ciberseguridad.",
       price: null, pay: "Según número de participantes" },
@@ -74,6 +84,9 @@ window.ABV_MARKET = {
     { id: "arrendamiento", area: "inmobiliario", name: "Arrendamiento blindado y desalojos",
       desc: "Contratos de arrendamiento que te protegen, cobro de rentas y juicios de desocupación.",
       price: null, pay: "Valor según el caso" },
+    { id: "fideicomiso", area: "inmobiliario", name: "Fideicomiso y régimen de condominio",
+      desc: "Fideicomiso en zona restringida para compradores extranjeros, régimen de condominio y estructura legal de desarrollos turísticos.",
+      price: null, pay: "Valor según el proyecto", tag: "Costa y turismo" },
     { id: "inversiones", area: "inmobiliario", name: "Bienes raíces e inversiones 360",
       desc: "Con Smart Property Inversiones: búsqueda, análisis de rentabilidad, compra, mejoras y administración de rentas, con respaldo legal en cada paso.",
       price: null, pay: "Plan a la medida", tag: "360" },
@@ -87,6 +100,9 @@ window.ABV_MARKET = {
       price: null, pay: "Valor según el caso" },
 
     // Civil
+    { id: "planeacion-patrimonial", area: "civil", name: "Planeación patrimonial y sucesoria",
+      desc: "Testamento, donaciones en vida y estructura de bienes para que su patrimonio pase a su familia sin juicios ni conflictos.",
+      price: null, pay: "Plan a la medida", tag: "Alto patrimonio" },
     { id: "sucesiones", area: "civil", name: "Juicio sucesorio y testamentos",
       desc: "Sucesión testamentaria o intestamentaria, y testamentos para dejar todo en orden.",
       price: null, pay: "Valor según el caso" },
@@ -110,7 +126,7 @@ window.ABV_MARKET = {
   ],
 
   text: {
-    priceQuote: "A evaluar", priceFree: "Gratis", from: "desde", fromCap: "Desde",
+    priceQuote: "A evaluar", priceFree: "Sin costo", from: "desde", fromCap: "Desde",
     installmentsOf: "cuotas de", installmentOf: "cuota de",
     want: "Lo quiero", addQuote: "+ Cotización", inQuote: "✓ En cotización", book: "Agendar",
     noteEmpty: "Elige al menos un servicio.",
