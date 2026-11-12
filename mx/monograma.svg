@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="AboVirtual México">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#f2dd8c"/><stop offset=".5" stop-color="#d4af37"/><stop offset="1" stop-color="#9c7a1e"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" fill="#0a0a0a"/>
+  <rect x="2.5" y="2.5" width="59" height="59" fill="none" stroke="url(#g)" stroke-width="1.2"/>
+  <text x="32" y="40" text-anchor="middle" font-family="Cinzel, 'Times New Roman', serif" font-size="22" font-weight="600" letter-spacing="1" fill="url(#g)">AV</text>
+  <rect x="16" y="49" width="10.67" height="2.4" fill="#0b6e4f"/>
+  <rect x="26.67" y="49" width="10.66" height="2.4" fill="#ffffff"/>
+  <rect x="37.33" y="49" width="10.67" height="2.4" fill="#c8102e"/>
+</svg>

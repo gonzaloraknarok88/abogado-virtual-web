@@ -125,7 +125,7 @@ window.ABV_MARKET = {
     ctxHello: "Hola, vi el catálogo de AboVirtual México.",
     ctxWant: "Me interesa", ctxMode: "Prefiero atención", ctxGeneric: "Quiero hacer una consulta.",
     meBook: "Quiero agendar una cita",
-    botHello: ["Hola, soy el asistente de AboVirtual México.", "¿En qué te puedo ayudar hoy?"],
+    botHello: ["Te damos la bienvenida a AboVirtual México. Soy tu Concierge legal.", "Cuéntame, ¿en qué te puedo ayudar hoy?"],
     botAgain: "¿En qué más te puedo ayudar?",
     botHome: "Volver al inicio",
     botWhichArea: "¿Qué área necesitas?",
