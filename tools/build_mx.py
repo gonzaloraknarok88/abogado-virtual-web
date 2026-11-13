@@ -25,6 +25,9 @@ SITIOS = REPO / "sites"
 WEB_URL = "https://abovirtual-mexico-web.vercel.app"
 CAT_URL = "https://abovirtual-mexico-catalogo.vercel.app"
 WA = "https://wa.me/525612133685"
+# Textos que abren los WhatsApp Flows del bot MX (repo abovirtual-ecosistema-1, whatsapp-flows/).
+TEXTO_FLOW_AGENDA = "Hola, quiero agendar una cita con AboVirtual México."
+TEXTO_FLOW_EMPRESAS = "Hola, quiero el diagnóstico empresarial para mi empresa."
 # Tipografías distintas por sitio. Web: Newsreader (títulos) + Instrument Sans (texto).
 # Catálogo: Bodoni Moda (títulos, estilo revista de lujo) + Jost (texto).
 FONTS = {
@@ -302,6 +305,8 @@ def agenda(titulo: str = "Agende su reunión privada", clase: str = "section", h
       <li>Sábado de 10:00 a 14:00 · citas de 45 minutos</li>
       <li>Agréguela a Google Calendar o descargue la invitación</li>
     </ul>
+    <p class="agenda-wa__p">¿Prefiere no salir de WhatsApp? Complete el formulario dentro del chat en menos de un minuto.</p>
+    <div class="actions agenda-wa">{wa(TEXTO_FLOW_AGENDA, "Agendar en WhatsApp", "btn btn--gold", "flow_agenda_wa")}{wa(TEXTO_FLOW_EMPRESAS, "Diagnóstico para empresas", "btn btn--gold", "flow_empresas_wa")}</div>
   </div>
   <div class="agenda" data-agenda><noscript><p>Para agendar sin JavaScript, escríbanos por WhatsApp al <a href="{WA}">+52 56 1213 3685</a>.</p></noscript><p class="agenda__hint">Cargando calendario…</p></div>
 </div></section>
@@ -694,7 +699,7 @@ def empresas() -> str:
                 "NOM-035 desde $5,190 MXN, sociedades desde $12,990, iguala mensual, empresa familiar, contratos y defensa laboral para corporativos, industria y hotelería.") + header("empresas") + phero(
         "Empresas y corporativos", "Área II · Empresas y corporativos", "Su área legal externa.", "Sin nómina extra.",
         'Laboral, NOM-035, sociedades, contratos y empresa familiar para corporativos, industria y hotelería. Menos <span class="pain">demandas</span>, menos <span class="pain">estrés corporativo</span>, más tiempo para dirigir.',
-        "/media/hf2.webp", wa("Hola, quiero una reunión corporativa con AboVirtual México.", "Agendar reunión corporativa", "btn btn--gold", "empresas_wa") + '<a class="btn btn--line" href="#servicios">Ver servicios</a>') + f"""
+        "/media/hf2.webp", wa("Hola, quiero una reunión corporativa con AboVirtual México.", "Agendar reunión corporativa", "btn btn--gold", "empresas_wa") + wa(TEXTO_FLOW_EMPRESAS, "Diagnóstico en WhatsApp", "btn btn--line", "flow_empresas_hero") + '<a class="btn btn--line" href="#servicios">Ver servicios</a>') + f"""
 <section class="section" id="servicios"><div class="wrap">
   {head_block("Servicios corporativos", "Cumplimiento, contratos y defensa", "Honorarios con IVA incluido. Para iguala, contratos y litigio enviamos una propuesta por escrito.")}
   <ul class="svcs">{servicios}</ul>
