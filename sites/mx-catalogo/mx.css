@@ -900,3 +900,7 @@ body.bot-open .bot__teaser { display: none; }
   .menu .menu__cta { display: none; }
   .logo__name { white-space: nowrap; }
 }
+
+/* Formularios de WhatsApp (Flows) bajo el calendario */
+.agenda-wa__p { margin-top: 22px; }
+.actions.agenda-wa { margin-top: 14px; gap: 10px; }
