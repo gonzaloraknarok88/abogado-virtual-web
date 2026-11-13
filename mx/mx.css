@@ -1,6 +1,6 @@
 /* AboVirtual México · base común de la web y el catálogo.
    Paleta de la marca MX: blanco, dorado, burdeo y verde (el azul queda solo en el logo).
-   Estructura y tipografía de la línea Chile (Cormorant + Montserrat). Precios en dorado, dolores en burdeo. */
+   Estructura de la línea Chile; cada sitio define su propia tipografía (web.css / catalogo.css). Precios en dorado, dolores en burdeo. */
 :root {
   /* Superficies (línea AboVirtual Chile: marfil, azul marino y dorado) */
   --white: #ffffff;
@@ -850,4 +850,53 @@ body.bot-open .wa { display: none; }
   .mapa__pin, .mapa__punto { opacity: 1; }
   .mapa.is-on .mapa__edo, .mapa.is-on .mapa__ruta, .mapa.is-on .mapa__flujo, .mapa__sweep, .mapa__onda, .mapa__sel, .mapa__halo { animation: none; }
   .cine__slide, .cine__slide video, .cine__txt { transition: none; }
+}
+
+/* ===== Concierge como en Chile: lanzador con avatar, globo de bienvenida y calendario en el chat ===== */
+a.menu__cta { text-decoration: none; display: inline-flex; align-items: center; }
+.bot__btn { gap: 12px; min-height: 0; padding: 6px 22px 6px 6px; border-radius: 999px; border: 1px solid var(--gold); background: linear-gradient(120deg, var(--burgundy-deep), var(--burgundy) 70%);
+  text-transform: none; letter-spacing: 0; box-shadow: 0 0 0 4px rgba(212,175,55,.18), 0 18px 36px -10px rgba(74,0,19,.55); transition: transform .25s, box-shadow .25s; }
+.bot__btn:hover { background: linear-gradient(120deg, var(--burgundy), var(--burgundy-hi)); transform: translateY(-2px); }
+.bot__face { position: relative; width: 60px; height: 60px; flex: none; border-radius: 50%; background: var(--logo-navy); box-shadow: 0 0 0 2px var(--gold), 0 0 0 5px rgba(212,175,55,.25); display: grid; place-items: center; animation: botRespira 3.6s ease-in-out infinite; }
+.bot__face img { width: 86%; height: 86%; object-fit: contain; border-radius: 50%; }
+.bot__face .bot__dot { position: absolute; right: 1px; bottom: 3px; width: 13px; height: 13px; border: 2px solid var(--white); background: #12a374; box-shadow: none; }
+.bot__face::after { content: ""; position: absolute; inset: -6px; border-radius: 50%; border: 1px solid var(--gold-hi); animation: botOnda 2.8s ease-out infinite; }
+@keyframes botRespira { 50% { transform: scale(1.05); } }
+@keyframes botOnda { 0% { transform: scale(.92); opacity: .9; } 100% { transform: scale(1.35); opacity: 0; } }
+.bot__txt { display: flex; flex-direction: column; align-items: flex-start; gap: 5px; text-align: left; }
+.bot__txt b { font: 600 1.02rem/1 var(--serif); color: var(--white); letter-spacing: .01em; }
+.bot__txt small { font: 600 .56rem/1 var(--sans); letter-spacing: .2em; text-transform: uppercase; color: var(--gold-hi); }
+body.bot-open .bot__face::after { animation: none; opacity: 0; }
+.bot__teaser { position: relative; width: min(300px, calc(100vw - 40px)); padding: 18px 18px 16px; background: var(--white); color: var(--ink); border: 1px solid rgba(212,175,55,.7); border-top: 3px solid var(--green);
+  box-shadow: 0 24px 50px -18px rgba(74,0,19,.45); animation: botGlobo .5s cubic-bezier(.2,.7,.2,1) both; }
+.bot__teaser[hidden] { display: none; }
+.bot__teaser::after { content: ""; position: absolute; right: 44px; bottom: -8px; width: 14px; height: 14px; background: var(--white); border-right: 1px solid rgba(212,175,55,.7); border-bottom: 1px solid rgba(212,175,55,.7); transform: rotate(45deg); }
+.bot__teaser p { margin: 0 22px 12px 0; font-size: .86rem; line-height: 1.5; color: var(--ink-soft); }
+.bot__teaser p b { display: block; margin-bottom: 4px; font: 600 1.25rem/1.15 var(--serif); color: var(--burgundy); }
+.bot__teaser-x { position: absolute; top: 8px; right: 8px; width: 28px; height: 28px; border: 0; background: transparent; font-size: 1.2rem; color: var(--mute); cursor: pointer; }
+.bot__teaser-go { width: 100%; min-height: 44px; border: 0; background: var(--gold-metal); color: var(--burgundy-deep); font: 600 .62rem/1 var(--sans); letter-spacing: .2em; text-transform: uppercase; cursor: pointer; }
+@keyframes botGlobo { from { opacity: 0; transform: translateY(12px) scale(.96); } }
+body.bot-open .bot__teaser { display: none; }
+.bot--wide { width: min(470px, calc(100vw - 32px)); max-height: min(760px, calc(100vh - 120px)); }
+.msg--agenda { max-width: 100%; width: 100%; padding: 16px !important; border-top-width: 3px; box-shadow: none; }
+.msg--agenda .agenda__modes { grid-template-columns: 1fr; gap: 8px; }
+.msg--agenda .fields { grid-template-columns: 1fr; gap: 10px; }
+.msg--agenda .agenda__days { grid-auto-columns: 58px; }
+.msg--agenda .agenda__ok-actions .btn { width: 100%; }
+.bot { bottom: 100px; }
+@media (max-width: 640px) {
+  .bot__btn { padding: 5px 16px 5px 5px; }
+  .bot__face { width: 50px; height: 50px; }
+  .bot__txt small { display: none; }
+  .bot { bottom: 84px; }
+  .bot--wide { left: 8px; right: 8px; width: auto; max-height: calc(100vh - 96px); }
+}
+@media (prefers-reduced-motion: reduce) { .bot__face, .bot__face::after, .bot__teaser { animation: none; } }
+.msg.msg--agenda p { background: transparent; box-shadow: none; border-left: 0; padding: 0; }
+.menu a.menu__cta, .menu a.menu__cta:hover { color: var(--white); border-bottom: 1px solid transparent; padding: 13px 20px; }
+.msg.msg--agenda .agenda__label { color: var(--navy); margin: 0 0 16px; }
+.msg.msg--agenda .agenda__hint { color: var(--ink-soft); margin: 16px 0 10px; }
+@media (max-width: 640px) {
+  .menu .menu__cta { display: none; }
+  .logo__name { white-space: nowrap; }
 }

@@ -16,6 +16,32 @@
     new IntersectionObserver((es) => es.forEach((e) => fn(e.isIntersecting)), { threshold: umbral || 0.3 }).observe(el);
   };
 
+  /* ---------------- Globo de bienvenida del Concierge (como en Chile) ---------------- */
+  (() => {
+    const globo = document.getElementById("botTeaser");
+    if (!globo) return;
+    const KEY = "abv-mx-teaser";
+    let visto = false;
+    try { visto = sessionStorage.getItem(KEY) === "1"; } catch (e) { /* sin almacenamiento */ }
+    if (visto) return;
+    const marcar = () => { try { sessionStorage.setItem(KEY, "1"); } catch (e) { /* sin almacenamiento */ } };
+    let encima = false, ocultar = 0;
+    const cerrar = () => { globo.hidden = true; marcar(); clearTimeout(ocultar); };
+    globo.addEventListener("pointerenter", () => { encima = true; });
+    globo.addEventListener("pointerleave", () => { encima = false; });
+    globo.addEventListener("focusin", () => { encima = true; });
+    globo.querySelector("[data-teaser-close]").addEventListener("click", cerrar);
+    globo.querySelector("[data-bot]").addEventListener("click", cerrar);
+    document.getElementById("botBtn")?.addEventListener("click", cerrar);
+    setTimeout(() => {
+      if (document.body.classList.contains("bot-open")) return;
+      globo.hidden = false;
+      marcar();
+      const auto = () => { if (encima) { ocultar = setTimeout(auto, 3000); return; } globo.hidden = true; };
+      ocultar = setTimeout(auto, 12000);
+    }, 3000);
+  })();
+
   /* ---------------- Carrusel de video ---------------- */
   document.querySelectorAll("[data-cine]").forEach((root) => {
     const slides = Array.from(root.querySelectorAll(".cine__slide"));

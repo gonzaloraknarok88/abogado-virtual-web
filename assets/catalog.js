@@ -235,7 +235,7 @@
     botLog.scrollTop = botLog.scrollHeight;
   };
 
-  const ask = (texts, opts) => {
+  const ask = (texts, opts, after) => {
     clearTimeout(timer);
     botOpts.replaceChildren();
     const typing = el("div", { class: "msg msg--bot msg--typing", "aria-hidden": "true" }, el("span"), el("span"), el("span"));
@@ -251,7 +251,8 @@
         if (!o.href) node.addEventListener("click", () => { say(o.label, "me"); o.go(); });
         botOpts.append(node);
       });
-      botLog.scrollTop = botLog.scrollHeight;
+      if (after) after();
+      else botLog.scrollTop = botLog.scrollHeight;
     }, reduced ? 0 : 420);
   };
 
@@ -298,6 +299,17 @@
     },
     mode(m) {
       ctx.mode = m.ctx;
+      if (window.ABV_AGENDA) {
+        // Calendario dentro del chat (sitios que cargan agenda.js).
+        ask([m.info, T.botPickHere || T.botPickTime], [{ label: T.botConfirmWa, go: flows.wa }, home], () => {
+          const box = el("div", { class: "msg msg--bot msg--agenda agenda" });
+          botLog.append(box);
+          window.ABV_AGENDA.montar(box, { modo: m.id, servicio: ctx.service ? ctx.service.id : "" });
+          bot.classList.add("bot--wide");
+          botLog.scrollTop = Math.max(0, box.offsetTop - botLog.offsetTop - 90);
+        });
+        return;
+      }
       const opts = [];
       if (BOOKING_URL) opts.push({ label: T.botOpenCalendar, href: BOOKING_URL, track: "bot_agendar_" + m.id });
       opts.push({ label: BOOKING_URL ? T.botConfirmWa : T.botBookWa, go: flows.wa }, home);
@@ -319,6 +331,7 @@
   };
 
   function start(again) {
+    bot.classList.remove("bot--wide");
     ctx.service = null;
     ctx.mode = null;
     const opts = [

@@ -25,8 +25,12 @@ SITIOS = REPO / "sites"
 WEB_URL = "https://abovirtual-mexico-web.vercel.app"
 CAT_URL = "https://abovirtual-mexico-catalogo.vercel.app"
 WA = "https://wa.me/525612133685"
-FONTS = ("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600"
-         "&family=Montserrat:wght@300;400;500;600&display=swap")
+# Tipografías distintas por sitio. Web: Newsreader (títulos) + Instrument Sans (texto).
+# Catálogo: Bodoni Moda (títulos, estilo revista de lujo) + Jost (texto).
+FONTS = {
+    "web": "https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400..700;1,6..72,400..600&family=Instrument+Sans:wght@400..600&display=swap",
+    "catalogo": "https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..800;1,6..96,400..700&family=Jost:wght@300..600&display=swap",
+}
 
 # Sitio que se está generando ("web" o "catalogo"); lo fija main().
 SITIO = "web"
@@ -119,7 +123,7 @@ def head(slug: str, titulo: str, desc: str, extra_ld: dict | None = None) -> str
 <link rel="apple-touch-icon" href="/mx/apple-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="{FONTS}" rel="stylesheet">
+<link href="{FONTS[SITIO]}" rel="stylesheet">
 <link rel="stylesheet" href="/mx/mx.css">
 <link rel="stylesheet" href="/mx/{hoja}">
 {ld_html}
@@ -158,7 +162,7 @@ def header(activo: str) -> str:
       <div class="menu__item"><a href="/mx/#areas"{area_on}>Áreas</a><div class="menu__drop">{drop}</div></div>
       {nav}
       <details class="mnav"><summary>Menú</summary><div class="mnav__panel"><a href="/mx/">Inicio</a><a href="/mx/#areas">Áreas</a>{mob}{mob_nav}</div></details>
-      <button type="button" class="menu__cta" data-bot="start">Concierge</button>
+      <a class="menu__cta" href="/mx/agendar" data-bot="agenda">Agendar cita</a>
     </nav>
   </div>
 </header>
@@ -180,7 +184,7 @@ def cheader(activo: str) -> str:
       <img src="/mx/logo-negro-head.webp" alt="AboVirtual · Abogados siempre conectados" width="172" height="140">
       <span><b>La Colección</b><small>Catálogo · AboVirtual México</small></span>
     </a>
-    <nav class="cnav cnav--end" aria-label="Accesos"><a href="/mx/catalogo#sede">Oficina</a><a class="cbtn" href="/mx/agendar">Agendar cita</a></nav>
+    <nav class="cnav cnav--end" aria-label="Accesos"><a href="/mx/catalogo#sede">Oficina</a><a class="cbtn" href="/mx/agendar" data-bot="agenda">Agendar cita</a></nav>
   </div>
 </header>
 <main id="main">
@@ -250,7 +254,15 @@ def footer() -> str:
       <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.7-1.4.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.3-.2-.5-.3Z"/></svg>
     </button>
   </div>
-  <button class="bot__btn" id="botBtn" aria-expanded="false" aria-controls="bot"><span class="bot__dot" aria-hidden="true"></span>Concierge</button>
+  <div class="bot__teaser" id="botTeaser" hidden>
+    <button type="button" class="bot__teaser-x" data-teaser-close aria-label="Cerrar aviso">×</button>
+    <p><b>¿Agendamos su cita?</b>Elija día y hora aquí mismo, presencial en CDMX o por videollamada.</p>
+    <button type="button" class="bot__teaser-go" data-bot="agenda">Ver horarios disponibles</button>
+  </div>
+  <button class="bot__btn" id="botBtn" aria-expanded="false" aria-controls="bot" aria-label="Abrir Concierge: agendar cita">
+    <span class="bot__face" aria-hidden="true"><img src="{avatar}" alt="" width="64" height="64"><span class="bot__dot"></span></span>
+    <span class="bot__txt"><b>Agendar cita</b><small>Concierge en línea</small></span>
+  </button>
 </div>
 </body>
 </html>

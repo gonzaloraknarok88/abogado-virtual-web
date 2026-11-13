@@ -161,6 +161,7 @@ window.ABV_MARKET = {
     botOpenCalendar: "Abrir calendario y elegir horario",
     botConfirmWa: "Prefiero confirmar por WhatsApp",
     botBookWa: "Agendar por WhatsApp",
+    botPickHere: "Elige día y hora aquí mismo. Tu solicitud llega a nuestro WhatsApp y un abogado te confirma la cita.",
     botPickTime: "Elige tu horario en el calendario y te confirmamos por WhatsApp.",
     botWeConfirm: "Escríbenos por WhatsApp y te confirmamos día y hora en minutos.",
     botWhichLine: "Escríbenos por WhatsApp:",

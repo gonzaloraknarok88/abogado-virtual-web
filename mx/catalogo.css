@@ -201,3 +201,23 @@ body { background: var(--cat-bg); color: var(--cat-text); }
 .mapa__chip.is-sede { color: #7fe0b8; border-color: var(--green-soft); }
 .mapa__chip.is-sel { background: var(--gold); border-color: var(--gold); color: var(--burgundy-deep); }
 .mapa__credito { color: var(--cat-soft); opacity: .7; }
+.bot__btn { background: linear-gradient(120deg, #1c020a, var(--burgundy-deep)); }
+.bot__face { background: #0f0105; }
+.bot__teaser { background: var(--cat-panel); color: var(--cat-text); border-color: var(--cat-line-2); }
+.bot__teaser::after { background: var(--cat-panel); border-color: var(--cat-line-2); }
+.bot__teaser p { color: var(--cat-soft); }
+.bot__teaser p b { color: #fff; }
+.bot__teaser-x { color: var(--cat-soft); }
+
+/* Tipografía del CATÁLOGO: Bodoni Moda (títulos de revista de lujo) + Jost (texto) */
+:root {
+  --display: "Bodoni Moda", Didot, "Times New Roman", serif;
+  --serif: "Bodoni Moda", Didot, "Times New Roman", serif;
+  --sans: "Jost", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+body { font-size: 16.5px; font-weight: 400; }
+h1, h2, h3, .head h2, .section h2 { font-optical-sizing: auto; font-weight: 500; letter-spacing: -.005em; }
+.maison p:not(.eyebrow) { font-family: var(--sans); font-weight: 300; font-size: 1.12rem; color: var(--cat-soft); }
+.msg.msg--agenda .agenda__label { color: var(--cat-soft2); }
+.msg.msg--agenda .agenda__hint, .msg.msg--agenda .agenda__sum { color: var(--cat-soft); }
+.bot__log { background: var(--cat-bg); }

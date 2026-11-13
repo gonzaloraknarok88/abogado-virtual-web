@@ -11,7 +11,7 @@
   "use strict";
   const M = window.ABV_MARKET;
   const roots = document.querySelectorAll("[data-agenda]");
-  if (!M || !roots.length) return;
+  if (!M) return;
 
   const TZ = "America/Mexico_City";
   const DIAS = 21;          // días hacia adelante que se muestran
@@ -79,8 +79,8 @@
   };
   const icsEsc = (s) => s.replace(/[\\,;]/g, (c) => "\\" + c).replace(/\n/g, "\\n");
 
-  roots.forEach((root, idx) => {
-    const preServicio = new URLSearchParams(location.search).get("servicio") || "";
+  const montar = (root, idx, opc = {}) => {
+    const preServicio = opc.servicio || new URLSearchParams(location.search).get("servicio") || "";
     const st = { modo: "", dia: null, hora: "" };
     const uid = "ag" + idx;
 
@@ -160,6 +160,7 @@
       pintarDias(); pintarHoras(); pintarResumen();
     }));
     pintarDias();
+    if (opc.modo) { const b = modos.querySelector(`[data-modo="${opc.modo}"]`); if (b) b.click(); }
 
     form.addEventListener("submit", (e) => {
       e.preventDefault();
@@ -215,5 +216,10 @@
       listo.hidden = false;
       listo.scrollIntoView({ behavior: "smooth", block: "nearest" });
     });
-  });
+  };
+
+  roots.forEach((r, i) => montar(r, i));
+  // Para el Concierge: monta el mismo calendario dentro del chat.
+  let n = 100;
+  window.ABV_AGENDA = { montar: (root, opc) => montar(root, n++, opc) };
 })();

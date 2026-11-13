@@ -18,7 +18,7 @@
 <link rel="apple-touch-icon" href="/apple-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..800;1,6..96,400..700&family=Jost:wght@300..600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/mx.css">
 <link rel="stylesheet" href="/catalogo.css">
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "LegalService", "name": "AboVirtual México · Catálogo La Colección", "url": "https://abovirtual-mexico-catalogo.vercel.app/", "image": "https://abovirtual-mexico-catalogo.vercel.app/logo-azul.webp", "logo": "https://abovirtual-mexico-catalogo.vercel.app/logo-azul.webp", "telephone": "+525612133685", "priceRange": "$$$", "areaServed": [{"@type": "Country", "name": "México"}, {"@type": "State", "name": "Aguascalientes"}, {"@type": "State", "name": "Baja California"}, {"@type": "State", "name": "Baja California Sur"}, {"@type": "State", "name": "Campeche"}, {"@type": "State", "name": "Chiapas"}, {"@type": "State", "name": "Chihuahua"}, {"@type": "State", "name": "Ciudad de México"}, {"@type": "State", "name": "Coahuila"}, {"@type": "State", "name": "Colima"}, {"@type": "State", "name": "Durango"}, {"@type": "State", "name": "Estado de México"}, {"@type": "State", "name": "Guanajuato"}, {"@type": "State", "name": "Guerrero"}, {"@type": "State", "name": "Hidalgo"}, {"@type": "State", "name": "Jalisco"}, {"@type": "State", "name": "Michoacán"}, {"@type": "State", "name": "Morelos"}, {"@type": "State", "name": "Nayarit"}, {"@type": "State", "name": "Nuevo León"}, {"@type": "State", "name": "Oaxaca"}, {"@type": "State", "name": "Puebla"}, {"@type": "State", "name": "Querétaro"}, {"@type": "State", "name": "Quintana Roo"}, {"@type": "State", "name": "San Luis Potosí"}, {"@type": "State", "name": "Sinaloa"}, {"@type": "State", "name": "Sonora"}, {"@type": "State", "name": "Tabasco"}, {"@type": "State", "name": "Tamaulipas"}, {"@type": "State", "name": "Tlaxcala"}, {"@type": "State", "name": "Veracruz"}, {"@type": "State", "name": "Yucatán"}, {"@type": "State", "name": "Zacatecas"}], "address": {"@type": "PostalAddress", "streetAddress": "Plaza Carso, Lago Zúrich 245, Puerta 5, Torre Frisko, Piso 7, Oficina 740", "addressLocality": "Ciudad de México", "addressRegion": "CDMX", "postalCode": "11529", "addressCountry": "MX"}, "openingHoursSpecification": [{"@type": "OpeningHoursSpecification", "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"], "opens": "10:00", "closes": "20:00"}, {"@type": "OpeningHoursSpecification", "dayOfWeek": "Saturday", "opens": "10:00", "closes": "14:00"}]}</script>
@@ -42,7 +42,7 @@
       <img src="/logo-negro-head.webp" alt="AboVirtual · Abogados siempre conectados" width="172" height="140">
       <span><b>La Colección</b><small>Catálogo · AboVirtual México</small></span>
     </a>
-    <nav class="cnav cnav--end" aria-label="Accesos"><a href="/#sede">Oficina</a><a class="cbtn" href="/agendar">Agendar cita</a></nav>
+    <nav class="cnav cnav--end" aria-label="Accesos"><a href="/#sede">Oficina</a><a class="cbtn" href="/agendar" data-bot="agenda">Agendar cita</a></nav>
   </div>
 </header>
 <main id="main">
@@ -119,7 +119,15 @@
       <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.7-1.4.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.3-.2-.5-.3Z"/></svg>
     </button>
   </div>
-  <button class="bot__btn" id="botBtn" aria-expanded="false" aria-controls="bot"><span class="bot__dot" aria-hidden="true"></span>Concierge</button>
+  <div class="bot__teaser" id="botTeaser" hidden>
+    <button type="button" class="bot__teaser-x" data-teaser-close aria-label="Cerrar aviso">×</button>
+    <p><b>¿Agendamos su cita?</b>Elija día y hora aquí mismo, presencial en CDMX o por videollamada.</p>
+    <button type="button" class="bot__teaser-go" data-bot="agenda">Ver horarios disponibles</button>
+  </div>
+  <button class="bot__btn" id="botBtn" aria-expanded="false" aria-controls="bot" aria-label="Abrir Concierge: agendar cita">
+    <span class="bot__face" aria-hidden="true"><img src="/logo-negro-sm.webp" alt="" width="64" height="64"><span class="bot__dot"></span></span>
+    <span class="bot__txt"><b>Agendar cita</b><small>Concierge en línea</small></span>
+  </button>
 </div>
 </body>
 </html>

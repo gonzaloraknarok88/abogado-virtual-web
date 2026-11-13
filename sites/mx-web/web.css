@@ -166,3 +166,14 @@
 .precios li > small { font-size: .66rem; letter-spacing: .14em; text-transform: uppercase; color: rgba(255,255,255,.62); }
 @media (max-width: 1100px) { .precios__in { grid-template-columns: 1fr; } .precios ul { grid-template-columns: repeat(2, 1fr); gap: 18px 0; } }
 @media (max-width: 640px) { .precios ul { grid-template-columns: 1fr; } .precios li { border-left: 0; padding: 0; border-top: 1px solid rgba(255,255,255,.14); padding-top: 12px; } }
+
+/* Tipografía de la WEB: Newsreader (serif editorial) + Instrument Sans (texto claro) */
+:root {
+  --display: "Newsreader", Georgia, "Times New Roman", serif;
+  --serif: "Newsreader", Georgia, "Times New Roman", serif;
+  --sans: "Instrument Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+body { font-size: 16.5px; }
+h1, h2, h3, .head h2 { font-optical-sizing: auto; letter-spacing: -.01em; }
+.hero h1 { font-size: clamp(2.4rem, 5vw, 4.3rem); font-weight: 500; line-height: 1.04; }
+.head h2, .phero h1 { font-weight: 500; }
